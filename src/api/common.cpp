@@ -1,4 +1,4 @@
-﻿/*****************************************************************************
+/*****************************************************************************
 Emp
 
 Copyright (C) 2017  German Molina (germolinal@gmail.com)
@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "./common.h"
 #include <iostream>
+#include "../config_constants.h"
 
 GroundhogModel * getCurrentModel(lua_State * L)
 {

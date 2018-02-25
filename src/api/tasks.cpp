@@ -20,34 +20,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "./tasks.h"
 
-#include "calculations/tasks/RTraceTask.h"
-#include "calculations/tasks/OconvTask.h"
-#include "writers/rad/tasks.h"
+#include "../../emp_core/include/emp_core.h"
+#include "../api.h"
+#include "./utils/optionset_ext.h"
+
 
 Task * workplaneIlluminanceFactory(lua_State * L)
 {
 
-  OconvOptions oconvOptions = OconvOptions();
+    OconvOptions oconvOptions = OconvOptions();
 
-  GroundhogModel * model = getCurrentModel(L);
-  RTraceOptions * rtraceOptions = model->getRTraceOptions();  
+    GroundhogModel * model = getCurrentModel(L);
+    RTraceOptions * rtraceOptions = model->getRTraceOptions();
 
-  OptionSet otherOptions = OptionSet();
-  otherOptions.addOption("workplane", "none");
+    OptionSet otherOptions = OptionSet();
+    otherOptions.addOption("workplane", "none");
+    otherOptions.addOption("sky", "gendaylit -ang 50 50 -W 500 200");
   
-  // RTRace options are obtained from the global options
-  otherOptions.fillFromLuaTable(L, 1);
-  oconvOptions.fillFromLuaTable(L, 1);
+    // RTRace options are obtained from the global options
+    fillOptionsFromLuaTable(&otherOptions, L, 1);
+    fillOptionsFromLuaTable(&oconvOptions, L, 1);
 
-  // Check that the workplane exists
-  std::string wpName = otherOptions.getOption<std::string>("workplane");
-  Workplane * wp = getWorkplane(L,wpName);
+    // Check that the workplane exists
+    std::string wpName = otherOptions.getOption<std::string>("workplane");
+    std::string sky = otherOptions.getOption<std::string>("sky");
+    
+    Workplane * wp = getWorkplane(L,wpName);
 
 
-  RTraceTask * res = new RTraceTask(model, rtraceOptions, wp, &oconvOptions);
-  
+    RTraceTask * res = new RTraceTask(model, rtraceOptions, wp, &oconvOptions, sky);
+    
 
-  return res;
+    return res;
 }
 
 
@@ -59,7 +63,7 @@ Task * writeRadSceneFile(lua_State * L)
     options.addOption("layers_directory","Geometry"); // The directory where the Layers are located
     
     // Fill the options
-    options.fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
     GroundhogModel * model = getCurrentModel(L);
@@ -86,7 +90,7 @@ Task * writeRadRifFile(lua_State * L)
     options.addOption("illums_directory","Illums"); // The directory where the Illums are located
     
     // Fill the options
-    options.fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
     GroundhogModel * model = getCurrentModel(L);
@@ -98,14 +102,14 @@ Task * writeRadRifFile(lua_State * L)
 
 
 
-Task * writeModelInfo(lua_State * L)
+Task * writeRadModelInfo(lua_State * L)
 {
     // Build options
     OptionSet options = OptionSet();
     options.addOption("filename","modelinfo.txt"); // The file to write the model info.
     
     // Fill the options
-    options.fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
     GroundhogModel * model = getCurrentModel(L);
@@ -116,14 +120,14 @@ Task * writeModelInfo(lua_State * L)
 }
 
 
-Task * writeComponentDefinitions(lua_State * L)
+Task * writeRadComponentDefinitions(lua_State * L)
 {
     // Build options
     OptionSet options = OptionSet();
     options.addOption("directory","Components"); // The directory to write the Components
     
     // Fill the options
-    options.fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
     GroundhogModel * model = getCurrentModel(L);
@@ -134,14 +138,14 @@ Task * writeComponentDefinitions(lua_State * L)
 }
 
 
-Task * writeViews(lua_State * L)
+Task * writeRadViews(lua_State * L)
 {
     // Build options
     OptionSet options = OptionSet();
     options.addOption("directory","Views"); // The directory to write the Views
     
     // Fill the options
-    options.fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
     GroundhogModel * model = getCurrentModel(L);
@@ -152,7 +156,7 @@ Task * writeViews(lua_State * L)
 }
 
 
-Task * writeCurrentSky(lua_State * L)
+Task * writeRadCurrentSky(lua_State * L)
 {
     // Build options
     OptionSet options = OptionSet();
@@ -160,7 +164,7 @@ Task * writeCurrentSky(lua_State * L)
     options.addOption("filename","Sky.rad"); // The name of the file
     
     // Fill the options
-    options.fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
     GroundhogModel * model = getCurrentModel(L);
@@ -171,7 +175,7 @@ Task * writeCurrentSky(lua_State * L)
 
 
 
-Task * writeCurrentWeather(lua_State * L)
+Task * writeRadCurrentWeather(lua_State * L)
 {
     // Build options
     OptionSet options = OptionSet();
@@ -179,7 +183,7 @@ Task * writeCurrentWeather(lua_State * L)
     options.addOption("filename","Sky.rad"); // The name of the file
     
     // Fill the options
-    options.fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
     GroundhogModel * model = getCurrentModel(L);
@@ -189,7 +193,7 @@ Task * writeCurrentWeather(lua_State * L)
 }
 
 
-Task * writeMaterials(lua_State * L)
+Task * writeRadMaterials(lua_State * L)
 {
     // Build options
     OptionSet options = OptionSet();
@@ -197,7 +201,7 @@ Task * writeMaterials(lua_State * L)
     options.addOption("filename","materials.mat"); // The name of the file that references all Materials
     
     // Fill the options
-    options.fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
     GroundhogModel * model = getCurrentModel(L);
@@ -208,14 +212,14 @@ Task * writeMaterials(lua_State * L)
 
 
 
-Task * writeLayers(lua_State * L)
+Task * writeRadLayers(lua_State * L)
 {
     // Build options
     OptionSet options = OptionSet();
     options.addOption("directory","Geometry"); // The directory to write the Materials
     
     // Fill the options
-    options.fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
     GroundhogModel * model = getCurrentModel(L);
@@ -226,14 +230,14 @@ Task * writeLayers(lua_State * L)
 
 
 
-Task * writePhotosensors(lua_State * L)
+Task * writeRadPhotosensors(lua_State * L)
 {
     // Build options
     OptionSet options = OptionSet();
     options.addOption("directory","Photosensors"); // The directory to write the Materials
     
     // Fill the options
-    options.fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
     GroundhogModel * model = getCurrentModel(L);
@@ -243,7 +247,7 @@ Task * writePhotosensors(lua_State * L)
 }
 
 
-Task * writeWorkplane(lua_State * L)
+Task * writeRadWorkplane(lua_State * L)
 {    
     // Build options
     OptionSet options = OptionSet();
@@ -254,7 +258,7 @@ Task * writeWorkplane(lua_State * L)
     options.addOption("filename","none"); // The name of the resulting file
     
     // Fill the options
-    options.fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(&options, L, 1);
         
     // Get the workplane
     Workplane * wp = getWorkplane(L,options.getOption<std::string>("workplane"));

@@ -4,6 +4,6 @@
 [submodule "3rdparty/Lua"]
 	path = 3rdparty/Lua
 	url = https://github.com/lua/lua.git
-[submodule "3rdparty/emp_core"]
-	path = 3rdparty/emp_core
+[submodule "emp_core"]
+	path = emp_core
 	url = https://github.com/GroundhogLighting/emp_core.git

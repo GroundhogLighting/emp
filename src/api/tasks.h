@@ -26,7 +26,7 @@ extern "C" {
 #include "lauxlib.h"
 }
 
-#include "common/taskmanager/task.h"
+#include "../../emp_core/include/emp_core.h"
 #include "api/common.h"
 
 //! Register an RTraceTask
@@ -63,7 +63,7 @@ Task * writeRadRifFile(lua_State * L);
  @param[in] L The lua_State * object
  @return The task
  */
-Task * writeModelInfo(lua_State * L);
+Task * writeRadModelInfo(lua_State * L);
 
 //! Writes the ComponentDefinition objects
 /*!
@@ -71,7 +71,7 @@ Task * writeModelInfo(lua_State * L);
  @param[in] L The lua_State * object
  @return The task
  */
-Task * writeComponentDefinitions(lua_State * L);
+Task * writeRadComponentDefinitions(lua_State * L);
 
 
 //! Writes the View objects
@@ -80,7 +80,7 @@ Task * writeComponentDefinitions(lua_State * L);
  @param[in] L The lua_State * object
  @return The task
  */
-Task * writeViews(lua_State * L);
+Task * writeRadViews(lua_State * L);
 
 //! Writes the current sky 
 /*!
@@ -88,7 +88,7 @@ Task * writeViews(lua_State * L);
  @param[in] L The lua_State * object
  @return The task
  */
-Task * writeCurrentSky(lua_State * L);
+Task * writeRadCurrentSky(lua_State * L);
 
 
 //! Writes the current weather
@@ -97,7 +97,7 @@ Task * writeCurrentSky(lua_State * L);
  @param[in] L The lua_State * object
  @return The task
  */
-Task * writeCurrentWeather(lua_State * L);
+Task * writeRadCurrentWeather(lua_State * L);
 
 
 //! Writes all the materials in the model
@@ -106,7 +106,7 @@ Task * writeCurrentWeather(lua_State * L);
  @param[in] L The lua_State * object
  @return The task
  */
-Task * writeMaterials(lua_State * L);
+Task * writeRadMaterials(lua_State * L);
 
 
 //! Writes all the layers in the model
@@ -115,7 +115,7 @@ Task * writeMaterials(lua_State * L);
  @param[in] L The lua_State * object
  @return The task
  */
-Task * writeLayers(lua_State * L);
+Task * writeRadLayers(lua_State * L);
 
 
 //! Writes all the photosensors in the model
@@ -124,7 +124,7 @@ Task * writeLayers(lua_State * L);
  @param[in] L The lua_State * object
  @return The task
  */
-Task * writePhotosensors(lua_State * L);
+Task * writeRadPhotosensors(lua_State * L);
 
 //! Writes a workplane
 /*!
@@ -132,7 +132,7 @@ Task * writePhotosensors(lua_State * L);
  @param[in] L The lua_State * object
  @return The task
  */
-Task * writeWorkplane(lua_State * L);
+Task * writeRadWorkplane(lua_State * L);
 
 
 

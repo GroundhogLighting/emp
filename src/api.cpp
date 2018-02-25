@@ -18,15 +18,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 *****************************************************************************/
 
-#include "./api.h"
-#include "config_constants.h"
 
-#include "common/utilities/stringutils.h"
-#include "./load_commands.h"
-#include "./load_tasks.h"
+#include "./api.h"
+
+#include "./config_constants.h"
+
+#include "./api/common.h"
+#include "../emp_core/include/emp_core.h"
+
 
 #include <utility>
-
 
 
 void registerTask(lua_State * L, const char * name, TaskFactory f)
@@ -34,27 +35,25 @@ void registerTask(lua_State * L, const char * name, TaskFactory f)
   std::map<std::string, TaskFactory> * taskDictionary = getCurrentTaskDictionary(L);
   
   (*taskDictionary)[std::string(name)] = f;
-
-  //taskDictionary->insert(std::make_pair(name, f));  
 }
 
 
 
-void loadAPI(lua_State * L, GroundhogModel * ghmodel, std::map<std::string, TaskFactory> * taskDictionary, TaskManager * taskManager, int argc, char* argv[]) {
+void initAPI(lua_State * L, GroundhogModel * ghmodel, std::map<std::string, TaskFactory> * taskDictionary, TaskManager * taskManager, int argc, char* argv[]) {
 
-	/* REGISTER THE GROUNDHOG MODEL */
+	// REGISTER THE GROUNDHOG MODEL
 	lua_pushlightuserdata(L, ghmodel);
 	lua_setglobal(L, LUA_MODEL_VARIABLE);
 
-	/* REGISTER THE TASK MANAGER */
+	// REGISTER THE TASK MANAGER
 	lua_pushlightuserdata(L, taskManager);
 	lua_setglobal(L, LUA_TASKMANAGER_VARIABLE);
 
-    /* REGISTER TASK DICTIONARY */
+    // REGISTER TASK DICTIONARY
     lua_pushlightuserdata(L, taskDictionary);
     lua_setglobal(L, LUA_TASKDICTIONARY_VARIABLE);
 
-	/* LOAD ARGUMENTS TABLE*/
+	// LOAD ARGUMENTS TABLE
 	lua_newtable(L);
 	int table_pos = lua_gettop(L);
 	for (int i = 3; i < argc; i++) {		
@@ -68,13 +67,5 @@ void loadAPI(lua_State * L, GroundhogModel * ghmodel, std::map<std::string, Task
 		lua_seti(L, table_pos, i-2);		
 	}
 	lua_setglobal(L, "argv");
-
-    /* REGISTER COMMANDS */
-    registerCommands(L);
-
-    /* REGISTER TASKS */
-    registerTasks(L);
-
-    
 }
 

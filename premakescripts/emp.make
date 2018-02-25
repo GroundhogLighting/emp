@@ -24,15 +24,15 @@ ifeq ($(config),debug)
   TARGET = $(TARGETDIR)/emp
   OBJDIR = obj/DEBUG/emp
   DEFINES += -DEMP -D_DEBUG -DTBB_DO_ASSERT=1 -DTBB_DO_THREADING_TOOLS=1 -DMACOS
-  INCLUDES += -I../src -I../3rdparty -I../3rdparty/intelTBB/include -I../3rdparty/Lua -I../3rdparty/nvwa/nvwa
+  INCLUDES += -I../src -I../3rdparty -I../emp_core/3rdparty/intelTBB/include -I../3rdparty/Lua -I../emp_core/src -I../emp_core/3rdparty -I../emp_core/3rdparty/Radiance/src/common -I../emp_core/3rdparty/Radiance/src/rt
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
-  ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++11 -F ../3rdparty/SketchUp/MACOS/headers -Wl,-no_pie
-  ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++11 -F ../3rdparty/SketchUp/MACOS/headers -Wl,-no_pie
+  ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++11 -F ../3rdparty/SketchUp/MACOS/headers
+  ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++11 -F ../3rdparty/SketchUp/MACOS/headers
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../libs/DEBUG/libLua.a -framework SketchUpAPI -ltbb_debug -lDEBUG
-  LDDEPS += ../libs/DEBUG/libLua.a
-  ALL_LDFLAGS += $(LDFLAGS) -L../3rdparty/emp_core/libs -L../3rdparty/SketchUp/MACOS/headers -m64 -F ../3rdparty/SketchUp/MACOS/headers -L ../libs/DEBUG/tbb
+  LIBS += ../libs/DEBUG/libLua.a ../libs/DEBUG/libemp_core.a -framework SketchUpAPI -ltbb_debug
+  LDDEPS += ../libs/DEBUG/libLua.a ../libs/DEBUG/libemp_core.a
+  ALL_LDFLAGS += $(LDFLAGS) -L../3rdparty/SketchUp/MACOS/headers -m64 -F ../3rdparty/SketchUp/MACOS/headers -L ../emp_core/libs/DEBUG/tbb -v
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
@@ -59,15 +59,15 @@ ifeq ($(config),release)
   TARGET = $(TARGETDIR)/emp
   OBJDIR = obj/RELEASE/emp
   DEFINES += -DEMP -DTBB_DO_ASSERT=0 -DTBB_DO_THREADING_TOOLS=0 -DMACOS
-  INCLUDES += -I../src -I../3rdparty -I../3rdparty/intelTBB/include -I../3rdparty/Lua
+  INCLUDES += -I../src -I../3rdparty -I../emp_core/3rdparty/intelTBB/include -I../3rdparty/Lua -I../emp_core/src -I../emp_core/3rdparty -I../emp_core/3rdparty/Radiance/src/common -I../emp_core/3rdparty/Radiance/src/rt
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++11 -F ../3rdparty/SketchUp/MACOS/headers
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++11 -F ../3rdparty/SketchUp/MACOS/headers
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += ../libs/RELEASE/libLua.a -framework SketchUpAPI -ltbb_debug -lRELEASE
-  LDDEPS += ../libs/RELEASE/libLua.a
-  ALL_LDFLAGS += $(LDFLAGS) -L../3rdparty/emp_core/libs -L../3rdparty/SketchUp/MACOS/headers -m64 -F ../3rdparty/SketchUp/MACOS/headers -L ../libs/RELEASE/tbb
+  LIBS += ../libs/RELEASE/libLua.a ../libs/RELEASE/libemp_core.a -framework SketchUpAPI -ltbb
+  LDDEPS += ../libs/RELEASE/libLua.a ../libs/RELEASE/libemp_core.a
+  ALL_LDFLAGS += $(LDFLAGS) -L../3rdparty/SketchUp/MACOS/headers -m64 -F ../3rdparty/SketchUp/MACOS/headers -L ../emp_core/libs/RELEASE/tbb -v
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
@@ -82,28 +82,17 @@ endif
 
 OBJECTS := \
 	$(OBJDIR)/main.o \
-	$(OBJDIR)/api.o \
 	$(OBJDIR)/api_io.o \
-	$(OBJDIR)/export_import.o \
-	$(OBJDIR)/gh_model.o \
-	$(OBJDIR)/options.o \
-	$(OBJDIR)/radiance_core.o \
 	$(OBJDIR)/tasks_manager.o \
 	$(OBJDIR)/common.o \
+	$(OBJDIR)/gh_model.o \
+	$(OBJDIR)/options.o \
 	$(OBJDIR)/tasks.o \
-	$(OBJDIR)/emp.o \
-	$(OBJDIR)/GHMreader.o \
-	$(OBJDIR)/SKPreader.o \
+	$(OBJDIR)/api.o \
 
 RESOURCES := \
 
 CUSTOMFILES := \
-
-ifeq ($(config),debug)
-  OBJECTS += \
-	$(OBJDIR)/debug_new.o \
-
-endif
 
 SHELLTYPE := msdos
 ifeq (,$(ComSpec)$(COMSPEC))
@@ -151,14 +140,6 @@ endif
 	$(SILENT) $(CXX) -x c++-header $(ALL_CXXFLAGS) -o "$@" -MF "$(@:%.gch=%.d)" -c "$<"
 endif
 
-$(OBJDIR)/debug_new.o: ../3rdparty/nvwa/nvwa/debug_new.cpp
-	@echo $(notdir $<)
-ifeq (posix,$(SHELLTYPE))
-	$(SILENT) mkdir -p $(OBJDIR)
-else
-	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
-endif
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/main.o: ../main.cpp
 	@echo $(notdir $<)
 ifeq (posix,$(SHELLTYPE))
@@ -167,47 +148,7 @@ else
 	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
 endif
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/api.o: ../src/api/api.cpp
-	@echo $(notdir $<)
-ifeq (posix,$(SHELLTYPE))
-	$(SILENT) mkdir -p $(OBJDIR)
-else
-	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
-endif
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/api_io.o: ../src/api/commands/api_io.cpp
-	@echo $(notdir $<)
-ifeq (posix,$(SHELLTYPE))
-	$(SILENT) mkdir -p $(OBJDIR)
-else
-	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
-endif
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/export_import.o: ../src/api/commands/export_import.cpp
-	@echo $(notdir $<)
-ifeq (posix,$(SHELLTYPE))
-	$(SILENT) mkdir -p $(OBJDIR)
-else
-	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
-endif
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/gh_model.o: ../src/api/commands/gh_model.cpp
-	@echo $(notdir $<)
-ifeq (posix,$(SHELLTYPE))
-	$(SILENT) mkdir -p $(OBJDIR)
-else
-	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
-endif
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/options.o: ../src/api/commands/options.cpp
-	@echo $(notdir $<)
-ifeq (posix,$(SHELLTYPE))
-	$(SILENT) mkdir -p $(OBJDIR)
-else
-	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
-endif
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/radiance_core.o: ../src/api/commands/radiance_core.cpp
 	@echo $(notdir $<)
 ifeq (posix,$(SHELLTYPE))
 	$(SILENT) mkdir -p $(OBJDIR)
@@ -231,6 +172,22 @@ else
 	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
 endif
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/gh_model.o: ../src/api/ghm_commands/gh_model.cpp
+	@echo $(notdir $<)
+ifeq (posix,$(SHELLTYPE))
+	$(SILENT) mkdir -p $(OBJDIR)
+else
+	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
+endif
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/options.o: ../src/api/ghm_commands/options.cpp
+	@echo $(notdir $<)
+ifeq (posix,$(SHELLTYPE))
+	$(SILENT) mkdir -p $(OBJDIR)
+else
+	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
+endif
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/tasks.o: ../src/api/tasks.cpp
 	@echo $(notdir $<)
 ifeq (posix,$(SHELLTYPE))
@@ -239,23 +196,7 @@ else
 	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
 endif
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/emp.o: ../src/emp.cpp
-	@echo $(notdir $<)
-ifeq (posix,$(SHELLTYPE))
-	$(SILENT) mkdir -p $(OBJDIR)
-else
-	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
-endif
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/GHMreader.o: ../src/readers/ghm/GHMreader.cpp
-	@echo $(notdir $<)
-ifeq (posix,$(SHELLTYPE))
-	$(SILENT) mkdir -p $(OBJDIR)
-else
-	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
-endif
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/SKPreader.o: ../src/readers/skp/SKPreader.cpp
+$(OBJDIR)/api.o: ../src/api.cpp
 	@echo $(notdir $<)
 ifeq (posix,$(SHELLTYPE))
 	$(SILENT) mkdir -p $(OBJDIR)

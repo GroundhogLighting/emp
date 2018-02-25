@@ -18,13 +18,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 *****************************************************************************/
 
+#ifndef API_LOAD_TASKS_H
+#define API_LOAD_TASKS_H
+
 extern "C" {
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 }
 
+#include "./common.h"
 #include "./tasks.h"
+
+
+
+//! Adds a TaskFactory function to the Task Dictionary
+/*!
+ This allos addint tasks to the task manager from the API
+ 
+ @author German Molina
+ @param[in] L The lua_State * object
+ @param[in] name The name of the task
+ @param[in] f The TaskFactory
+ */
+void registerTask(lua_State * L, const char * name, TaskFactory f);
+
 
 //! Registers all the available tasks in the API
 /*!
@@ -37,23 +55,25 @@ void registerTasks(lua_State * L)
 
     registerTask(L, "write_scene_file",writeRadSceneFile);
     
-    registerTask(L,"write_model_info",writeModelInfo);
+    registerTask(L,"write_model_info",writeRadModelInfo);
     
     registerTask(L,"write_rif_file",writeRadRifFile);
     
-    registerTask(L,"write_components",writeComponentDefinitions);
+    registerTask(L,"write_components",writeRadComponentDefinitions);
     
-    registerTask(L,"write_views",writeViews);
+    registerTask(L,"write_views",writeRadViews);
     
-    registerTask(L,"write_current_sky",writeCurrentSky);
+    registerTask(L,"write_current_sky",writeRadCurrentSky);
     
-    registerTask(L,"write_current_weather",writeCurrentWeather);
+    registerTask(L,"write_current_weather",writeRadCurrentWeather);
 
-    registerTask(L,"write_materials",writeMaterials);
+    registerTask(L,"write_materials",writeRadMaterials);
     
-    registerTask(L,"write_layers",writeLayers);
+    registerTask(L,"write_layers",writeRadLayers);
 
-    registerTask(L,"write_photosensors",writePhotosensors);
+    registerTask(L,"write_photosensors",writeRadPhotosensors);
 
-    registerTask(L,"write_workplane",writeWorkplane);
+    registerTask(L,"write_workplane",writeRadWorkplane);
 }
+
+#endif

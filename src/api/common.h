@@ -17,19 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 *****************************************************************************/
-#pragma once
+#ifndef API_COMMON_H
+#define API_COMMON_H
 
-#include "./config_constants.h"
-
-#include "./common/taskmanager/taskmanager.h"
-#include "./groundhogmodel/groundhogmodel.h"
-
+#include "../taskfactory.h"
+#include "../emp_core/include/emp_core.h"
 
 extern "C" {
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 }
+
+
 
 //! Retrieves the current GroundhogModel exposed to the API
 /*!
@@ -167,3 +167,5 @@ Raises an error if it does not exist
 @param[in] workplaneName The name of the workplane
 */
 Workplane * getWorkplane(lua_State * L, std::string workplaneName);
+
+#endif

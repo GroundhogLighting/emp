@@ -1,4 +1,4 @@
-﻿/*****************************************************************************
+/*****************************************************************************
 Emp
 
 Copyright (C) 2017  German Molina (germolinal@gmail.com)
@@ -20,10 +20,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "config_constants.h"
-#include "groundhogmodel/groundhogmodel.h"
-
+#include "../../../emp_core/include/emp_core.h"
+#include "../utils/optionset_ext.h"
 #include "./api/common.h"
-#include "./options.h"
+
 
 #include <iostream>
 #include <fstream>
@@ -62,7 +62,7 @@ int set_rtrace_options(lua_State *L)
     checkArgType(L, LUA_TTABLE, 1);
     
     // Fill the table
-    options->fillFromLuaTable(L, 1);
+    fillOptionsFromLuaTable(options, L, 1);
 
 	return 0;
 	

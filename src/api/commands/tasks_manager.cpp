@@ -21,10 +21,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <map>
 
+#include "../emp_core/include/emp_core.h"
 #include "./tasks_manager.h"
 #include "../common.h"
 
-#include "writers/rad/tasks.h"
 
 int solveTaskManager(lua_State * L)
 {

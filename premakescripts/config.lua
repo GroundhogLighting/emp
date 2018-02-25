@@ -3,7 +3,9 @@
 -- Glare basic organizations
 libs_dir = "../libs"
 third_party_dir = "../3rdparty"
-emp_core_lib_dir = third_party_dir.."/emp_core/libs"
+emp_core_dir = "../emp_core"
+rad_common = emp_core_dir.."/3rdparty/Radiance/src/common"
+rad_rt = emp_core_dir.."/3rdparty/Radiance/src/rt"
 
 -- Lua base directory
 lua_dir = "../3rdparty/Lua/"
