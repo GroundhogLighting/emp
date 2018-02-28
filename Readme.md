@@ -44,13 +44,13 @@ to provide a basis of geometry, materials, location, weather and other things; w
 latter is meant to perform actions and calculatons over this basis.
 
 ```bash
-emp $model script.lua
+emp model script.lua
 ```
 
 An example of this could be
 
 ```bash
-emp $model calculate_daylight_factor #which would calculate the DF in al workplanes
+emp model calculate_daylight_factor #which would calculate the DF in al workplanes
 ```
 
 ### The EMPATH
@@ -71,7 +71,8 @@ and more will be written to the standard output.
 ### Other uses
 
 Other uses are meant to provide basic information
-```
+```bash
+
 emp {--help|-h}        : prints this message
 emp {--version|-v}        : prints version
 emp {--about|-a}        : prints about
@@ -79,16 +80,66 @@ emp --checkpath        : prints the EMPATH variable
 ```
 
 
+## Why Lua?
+
+A reasonable question... A lot of people may tell you a lot about [Lua](https://www.lua.org/):
+It is powerfull, small, fast, flexible, etc. However, in my opinion, I chose it because of two
+reasons.
+
+### It was meant to be embedded
+
+The Lua C API is very well documented, easy to use and simple to implement... this does not
+happen in all programming languages.
+
+### It may be seen as plain text
+
+People who are not familiar with programming languages may be affraid of reading scripts.
+However, in the case of Lua, simple scripts may be seen as plain text files. Take, for example,
+the case of the creation of the following plastic:
+
+```
+void plastic someId
+0
+0
+5 0.7 0.05 0.05 0.05 0.05
+```
+
+Which in our Lua API is written as:
+
+```lua
+plastic {
+    r = 0.7;
+    g = 0.05;
+    b = 0.05;
+    specularity = 0.05;
+    roughness = 0.05;
+}
+
+```
+
+Even if I understand they are different, they can definetly be seen
+as different alternatives to the same thing. This does not happen with all programming
+languages eather.
 
 
+## **A very simple model**: Radiance's "Scene 0" written in Lua language
 
-## Radiance's "Scene 0" written in Lua language
+Please notice that:
+
+* The plastic material added is not asigned any name. Even if a name can be assigned (just like the light material),
+Emp will assing a random ID as a name to it.
+* Both materials added to the model are reused when creating geometrical elements.
+This allows, for example, modifying the name of one of them very easily without breaking any
+line of code below.
+* Views are part of the model as well. Every model has some views that are nicer or more important
+than others... and Emp tries to take this in consideration.
 
 ```lua
 -- SCENE 0
 
 -- Add a light material.
 bright = light {
+    name = "bright"
     r = 100; g = 100; b = 100;
 }
 
@@ -121,6 +172,14 @@ view {
 }
 
 ```
+
+## **A very simple script**: Visualizing Radiance's "Scene 0"
+
+
+
+## **Radiance, on steroids**: Sort of Radiance's "Scene 0", but with randomness
+
+
 
 ## A bit of history
 

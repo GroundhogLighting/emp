@@ -8,7 +8,8 @@ project "emp"
 
     files { 
         "../main.cpp",
-        "../src/**",    
+        "../src/**.h",
+        "../src/**.cpp",    
         "../main.h",
         --emp_core_dir.."/src/**"
     }

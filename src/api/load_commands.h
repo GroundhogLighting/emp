@@ -29,7 +29,7 @@ extern "C" {
 
 
 #include "./commands/tasks_manager.h"
-
+#include "./commands/rvu.h"
 
 //! Registers all the available commands in the API
 /*!
@@ -40,38 +40,46 @@ void registerCommands(lua_State * L)
 {
   
 
-  
+    /* ====================== */
+    /* @APIgroup TASK MANAGER */
+    /* ====================== */
+    
+    /* @APIfunction
+     
+     Solves the task manager
+     */
+    lua_register(L, "review", review);
 
-  /* ====================== */
-  /* @APIgroup TASK MANAGER */
-  /* ====================== */
+    /* ====================== */
+    /* @APIgroup TASK MANAGER */
+    /* ====================== */
 
-  /* @APIfunction
+    /* @APIfunction
 
-  Solves the task manager
-  */
-  lua_register(L, "solve", solveTaskManager);
+    Solves the task manager
+    */
+    lua_register(L, "solve", solveTaskManager);
 
-  /* @APIfunction
+    /* @APIfunction
 
-  Prints the current task flow to the standard output
-  */
-  lua_register(L, "print_task_flow", printTaskManager);
+    Prints the current task flow to the standard output
+    */
+    lua_register(L, "print_task_flow", printTaskManager);
 
-  /* @APIfunction
+    /* @APIfunction
 
-  Removes current tasks from Task Manager
-  */
-  lua_register(L, "purge_tasks", solveTaskManager);
+    Removes current tasks from Task Manager
+    */
+    lua_register(L, "purge_tasks", solveTaskManager);
 
-  /* @APIfunction
+    /* @APIfunction
 
-  Adds a task to the task manager
+    Adds a task to the task manager
 
-  @param[required] task_name The name of the task to add
-  @param[required] options The options given
-  */
-  lua_register(L, "task", addTask);
+    @param[required] task_name The name of the task to add
+    @param[required] options The options given
+    */
+    lua_register(L, "task", addTask);
 
 
 

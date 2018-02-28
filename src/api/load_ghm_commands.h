@@ -468,7 +468,6 @@ void registerGHMCommands(lua_State * L)
     
    
     
-    
 }
 
 #endif
