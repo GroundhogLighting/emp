@@ -35,8 +35,7 @@ void fillData(Ring * o, lua_State * L, int tableIndex)
 
 int createRing(lua_State * L)
 {
-    createOtype(L,"ring");
-    return 1;
+    return createOtype(L,"ring");    
 }
 
 

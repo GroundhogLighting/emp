@@ -1,4 +1,5 @@
 
+
 /*****************************************************************************
  Emp
  
@@ -31,28 +32,25 @@ extern "C" {
 
 #include "../emp_core/include/emp_core.h"
 
+//! Fills a Interface object with data contained in a Lua table
+/*!
+ @author German Molina
+ @param[in] o The Interface object to fill
+ @param[in] L The lua_State of the api
+ @param[in] tableIndex the location of the table in the stack
+ @return the number of return values within the script
+ */
 
-//! Retrieves a list of the View objects in the GroundhogModel
+void fillData(Interface * o, lua_State * L, int tableIndex);
+
+//! Adds a new interface object to the GroundhogModel
 /*!
  @author German Molina
  @param[in] L The lua_State of the api
  @return the number of return values within the script
  */
-int getViewsList(lua_State * L);
+int createInterface(lua_State * L);
 
-//! Checks if a View exists in a GroundhogModel
-/*!
- @author German Molina
- @param[in] L The lua state
- @return the number of return values within the script
- */
-int viewExists(lua_State * L);
 
-//! Adds a new view to the model
-/*!
- @author German Molina
- @param[in] L The lua state
- @return the number of return values within the script
- */
-int createView(lua_State * L);
+
 

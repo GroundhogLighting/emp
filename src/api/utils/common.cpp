@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "./common.h"
 #include <iostream>
 #include "../../config_constants.h"
-#include <chrono>
+
 
 GroundhogModel * getCurrentModel(lua_State * L)
 {
@@ -135,25 +135,28 @@ void missingOption(lua_State * L, std::string optionName, std::string optionType
 
 std::string requireNameFromTable(lua_State * L, int tableIndex)
 {
+    std::string ret;
     if(lua_getfield(L,tableIndex, "name") == LUA_TSTRING){
-        return std::string(lua_tostring(L,lua_gettop(L)));
+        ret = std::string(lua_tostring(L,lua_gettop(L)));
     }else{
         missingOption(L,"name","string");
-        lua_pop(L,1);
-        return nullptr;
+        ret = "dummy";
     }
+    lua_pop(L,1);
+    return ret;
 }
 
 std::string getNameFromTable(lua_State * L, int tableIndex)
 {
+    std::string ret;
     if(lua_getfield(L,tableIndex, "name") == LUA_TSTRING){
-        return std::string(lua_tostring(L,lua_gettop(L)));
+        ret = std::string(lua_tostring(L,lua_gettop(L)));
     }else{
-        std::chrono::milliseconds ms = std::chrono::duration_cast< std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch());
-        
-        lua_pop(L,1); // Remove the NIL value
-        return std::to_string(ms.count());
+        // This is my intention of generatint a unique id
+        ret = std::to_string(rand()%rand());
     }
+    lua_pop(L,1); // Remove the NIL value
+    return ret;
 }
 
 Point3D getPointFromTableField(lua_State * L, int tableIndex, const char * fieldName)
@@ -257,7 +260,9 @@ bool getPointFromTableIndex(lua_State * L, Point3D * p, int tableIndex, int i)
         return false;
     }else{
         badOptionError(L,std::to_string(i),lua_typename(L, type),"table");
+        return false; // to avoid warnings
     }
+    return false; // to avoid warnings
     
 }
 
@@ -287,7 +292,6 @@ std::vector<Point3D> getVectorOfPointsFromTableField(lua_State * L, int tableInd
     }else{
         badOptionError(L,std::string(fieldName),lua_typename(L, type),"table");
     }
-    int n = lua_gettop(L);
     return res;
 }
 
@@ -337,6 +341,50 @@ bool fieldExists(lua_State * L, int tableIndex, std::string fieldName)
     bool res = (type != LUA_TNIL);
     lua_pop(L,1);
     return res;    
+}
+
+void putVectorIntoTable(lua_State * L, int tableIndex, const char * fieldName, Vector3D v)
+{
+    int n = lua_gettop(L);
+    
+    // Create a new table.
+    lua_newtable(L); // index == n+1
+    
+    
+    // Add X, Y and Z to that table
+    lua_pushnumber(L,v.getX()); // index == n+2
+    lua_seti(L, n+1, 1);
+    
+    lua_pushnumber(L,v.getY()); // index == n+3
+    lua_seti(L, n+1, 2);
+    
+    lua_pushnumber(L,v.getZ()); // index == n+4
+    lua_seti(L, n+1, 3);
+    
+    lua_setfield(L, tableIndex, fieldName);
+    return;
+}
+
+void putPointIntoTable(lua_State * L, int tableIndex, const char * fieldName, Point3D p)
+{
+    int n = lua_gettop(L);
+    
+    // Create a new table.
+    lua_newtable(L); // index == n+1
+    
+    
+    // Add X, Y and Z to that table
+    lua_pushnumber(L,p.getX()); // index == n+2
+    lua_seti(L, n+1, 1);
+    
+    lua_pushnumber(L,p.getY()); // index == n+3
+    lua_seti(L, n+1, 2);
+    
+    lua_pushnumber(L,p.getZ()); // index == n+4
+    lua_seti(L, n+1, 3);
+    
+    lua_setfield(L, tableIndex, fieldName);
+    return;
 }
 
 

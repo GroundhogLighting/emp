@@ -217,6 +217,30 @@ Vector3D getVectorFromTableField(lua_State * L, int tableIndex, const char * fie
  */
 std::vector<Point3D> getVectorOfPointsFromTableField(lua_State * L, int tableIndex, const char * fieldName);
 
+//! Pushes a table of three numbers to a field in another table
+/*!
+ Throws an error if something is wrong
+ 
+ @author German Molina
+ @param[in] L The lua_State
+ @param[in] tableIndex The location of the table in the stack
+ @param[in] fieldName The name of the field where the Vector3D will be located
+ @param[in] v The vector to push
+ */
+void putVectorIntoTable(lua_State * L, int tableIndex, const char * fieldName, Vector3D v);
+
+//! Pushes a table of three numbers to a field in another table
+/*!
+ Throws an error if something is wrong
+ 
+ @author German Molina
+ @param[in] L The lua_State
+ @param[in] tableIndex The location of the table in the stack
+ @param[in] fieldName The name of the field where the Vector3D will be located
+ @param[in] p The point to push
+ */
+void putPointIntoTable(lua_State * L, int tableIndex, const char * fieldName, Point3D p);
+
 //! Retrieves a Point3D stored in a certain index of a Lua table
 /*!
  
@@ -262,5 +286,7 @@ std::string getStringFromTableField(lua_State * L, int tableIndex, const char * 
  @return exists?
  */
 bool fieldExists(lua_State * L, int tableIndex, std::string fieldName);
+
+
 
 #endif

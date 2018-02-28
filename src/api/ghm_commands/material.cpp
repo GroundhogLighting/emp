@@ -35,10 +35,11 @@ int getMaterialsList(lua_State * L)
     // Create the table
     lua_newtable(L); // index = 1
     
-    // push layer names
+    // push material names
     for (size_t i = 0; i < nmaterials; i++) {
-        std::string * name = model->getMaterialRef(i)->getName();
-        lua_pushstring(L, &name->at(0));
+        Material * m = model->getMaterialRef(i);
+        std::string * name = m->getName();
+        lua_pushstring(L, name->c_str());
         lua_seti(L, 1, i+1);
     }
     

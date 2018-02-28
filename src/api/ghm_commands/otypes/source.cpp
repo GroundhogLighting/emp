@@ -32,8 +32,7 @@ void fillData(Source * o, lua_State * L, int tableIndex)
 
 int createSource(lua_State * L)
 {
-    createOtype(L,"source");
-    return 1;
+    return createOtype(L,"source");    
 }
 
 

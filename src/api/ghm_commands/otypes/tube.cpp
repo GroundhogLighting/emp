@@ -33,8 +33,7 @@ void fillData(Tube * o, lua_State * L, int tableIndex)
 
 int createTube(lua_State * L)
 {
-    createOtype(L,"tube");
-    return 1;
+    return createOtype(L,"tube");
 }
 
 

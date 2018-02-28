@@ -21,6 +21,7 @@
 #include "./common.h"
 #include "./create_otype.h"
 #include "./get_layer.h"
+#include "./get_material.h"
 
 // Include otypes
 #include "../ghm_commands/otypes/bubble.h"
@@ -33,10 +34,14 @@
 #include "../ghm_commands/otypes/sphere.h"
 #include "../ghm_commands/otypes/tube.h"
 
+
 #define ADD_OBJECT(X) X * o = new X(&name); \
 fillData(o,L,1); \
 layer->addObject(o); \
 lua_pushstring(L,o->getType()->c_str()); \
+if(material != nullptr) \
+o->setMaterial(material)
+               
 
 
 int createOtype(lua_State * L, const char * type)
@@ -53,6 +58,13 @@ int createOtype(lua_State * L, const char * type)
     // Identify name
     std::string name = getNameFromTable(L,1);
     
+    // Identify material
+    std::string materialName;
+    Material * material = nullptr;
+    if(fieldExists(L,1, "material")){
+        materialName = getStringFromTableField(L, 1, "material");
+        material = getMaterial(L,&materialName);
+    }
     
     // Create the object and fill it
     if(strcmp(type,"bubble") == 0){
@@ -63,7 +75,7 @@ int createOtype(lua_State * L, const char * type)
         ADD_OBJECT(Cup);        
     }else if(strcmp(type,"cylinder") == 0){        
         ADD_OBJECT(Cylinder);         
-    }else if(strcmp(type,"face") == 0){
+    }else if(strcmp(type,"polygon") == 0){
         ADD_OBJECT(Face);        
     }else if(strcmp(type,"ring") == 0){
         ADD_OBJECT(Ring);
@@ -78,7 +90,6 @@ int createOtype(lua_State * L, const char * type)
         sendError(L,"Fatal", &e[0]);
     }
     
-    
     // Add Class to the original table
     lua_setfield(L,1,"class");
     
@@ -90,7 +101,13 @@ int createOtype(lua_State * L, const char * type)
     lua_pushstring(L,name.c_str());
     lua_setfield(L,1,"name");
     
-    return 1;
+    // Return the name
+    lua_pushstring(L,name.c_str());
+    
+    // and the table
+    lua_pushvalue(L,1);
+    
+    return 2;
 }
 
 #undef ADD_OBJECT

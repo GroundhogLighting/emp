@@ -34,8 +34,7 @@ void fillData(Cup * o, lua_State * L, int tableIndex)
 
 int createCup(lua_State * L)
 {
-    createOtype(L,"cup");
-    return 1;
+    return createOtype(L,"cup");    
 }
 
 

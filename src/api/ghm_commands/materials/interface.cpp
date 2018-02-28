@@ -19,40 +19,31 @@
  
  *****************************************************************************/
 
-#pragma once
+#include "./interface.h"
+#include "../../utils/common.h"
+#include "../../utils/get_layer.h"
+#include "../../utils/create_material.h"
 
-
-// Include LUA headers
-extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
+void fillData(Interface * m, lua_State * L, int tableIndex)
+{
+    m->r1 = getNumberFromTableField(L, tableIndex, "r1");
+    m->g1 = getNumberFromTableField(L, tableIndex, "g1");
+    m->b1 = getNumberFromTableField(L, tableIndex, "b1");
+    m->refractionIndex1 = getNumberFromTableField(L, tableIndex, "refraction1");
+    
+    m->r2 = getNumberFromTableField(L, tableIndex, "r2");
+    m->g2 = getNumberFromTableField(L, tableIndex, "g2");
+    m->b2 = getNumberFromTableField(L, tableIndex, "b2");
+    m->refractionIndex2 = getNumberFromTableField(L, tableIndex, "refraction2");
+    
 }
 
-#include "../emp_core/include/emp_core.h"
+int createInterface(lua_State * L)
+{
+    return createMaterial(L,"interface");    
+}
 
 
-//! Retrieves a list of the View objects in the GroundhogModel
-/*!
- @author German Molina
- @param[in] L The lua_State of the api
- @return the number of return values within the script
- */
-int getViewsList(lua_State * L);
 
-//! Checks if a View exists in a GroundhogModel
-/*!
- @author German Molina
- @param[in] L The lua state
- @return the number of return values within the script
- */
-int viewExists(lua_State * L);
 
-//! Adds a new view to the model
-/*!
- @author German Molina
- @param[in] L The lua state
- @return the number of return values within the script
- */
-int createView(lua_State * L);
 

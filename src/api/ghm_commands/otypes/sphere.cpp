@@ -32,8 +32,7 @@ void fillData(Sphere * o, lua_State * L, int tableIndex)
 
 int createSphere(lua_State * L)
 {
-    createOtype(L,"sphere");
-    return 1;
+    return createOtype(L,"sphere");    
 }
 
 

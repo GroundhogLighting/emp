@@ -34,8 +34,7 @@ void fillData(Cone * o, lua_State * L, int tableIndex)
 
 int createCone(lua_State * L)
 {
-    createOtype(L,"cone");
-    return 1;
+    return createOtype(L,"cone");    
 }
 
 

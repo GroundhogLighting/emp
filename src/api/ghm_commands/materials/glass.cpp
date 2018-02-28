@@ -19,40 +19,23 @@
  
  *****************************************************************************/
 
-#pragma once
+#include "./glass.h"
+#include "../../utils/common.h"
+#include "../../utils/get_layer.h"
+#include "../../utils/create_material.h"
 
-
-// Include LUA headers
-extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
+void fillData(Glass * m, lua_State * L, int tableIndex)
+{
+    m->r = getNumberFromTableField(L, tableIndex, "r");
+    m->g = getNumberFromTableField(L, tableIndex, "g");
+    m->b = getNumberFromTableField(L, tableIndex, "b");
+    
 }
 
-#include "../emp_core/include/emp_core.h"
+int createGlass(lua_State * L)
+{
+    return createMaterial(L,"glass");    
+}
 
 
-//! Retrieves a list of the View objects in the GroundhogModel
-/*!
- @author German Molina
- @param[in] L The lua_State of the api
- @return the number of return values within the script
- */
-int getViewsList(lua_State * L);
-
-//! Checks if a View exists in a GroundhogModel
-/*!
- @author German Molina
- @param[in] L The lua state
- @return the number of return values within the script
- */
-int viewExists(lua_State * L);
-
-//! Adds a new view to the model
-/*!
- @author German Molina
- @param[in] L The lua state
- @return the number of return values within the script
- */
-int createView(lua_State * L);
 

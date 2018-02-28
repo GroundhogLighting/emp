@@ -28,7 +28,7 @@ extern "C" {
 #include "lauxlib.h"
 }
 
-//! Adds a new object to the GroundhogModel
+//! Adds a new Otype to the GroundhogModel
 /*!
  @author German Molina
  @param[in] L The lua state

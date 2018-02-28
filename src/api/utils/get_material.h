@@ -34,7 +34,7 @@ extern "C" {
  
  @author German Molina
  @param[in] L The lua_State
- @param[in] workplaneName The name of the workplane
+ @param[in] materialName The name of the workplane
  @return The material
  */
-Material * getMaterial(lua_State * L, std::string * layerName);
+Material * getMaterial(lua_State * L, std::string * materialName);

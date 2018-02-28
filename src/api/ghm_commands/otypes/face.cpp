@@ -76,8 +76,7 @@ void fillData(Face * o, lua_State * L, int tableIndex)
 
 int createFace(lua_State * L)
 {
-    createOtype(L,"face");
-    return 1;
+    return createOtype(L,"polygon");    
 }
 
 

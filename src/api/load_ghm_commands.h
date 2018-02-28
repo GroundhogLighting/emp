@@ -31,7 +31,6 @@ extern "C" {
 #include "./io_commands/api_io.h"
 
 // GroundhogModel data
-//#include "./ghm_commands/options.h"
 #include "./ghm_commands/componentdefinition.h"
 #include "./ghm_commands/layer.h"
 #include "./ghm_commands/workplane.h"
@@ -39,6 +38,7 @@ extern "C" {
 #include "./ghm_commands/material.h"
 #include "./ghm_commands/otype.h"
 #include "./ghm_commands/rtraceoptions.h"
+#include "./ghm_commands/view.h"
 
 // Otype
 #include "./ghm_commands/otypes/bubble.h"
@@ -50,6 +50,17 @@ extern "C" {
 #include "./ghm_commands/otypes/source.h"
 #include "./ghm_commands/otypes/sphere.h"
 #include "./ghm_commands/otypes/tube.h"
+
+// Materials
+#include "./ghm_commands/materials/dielectric.h"
+#include "./ghm_commands/materials/glass.h"
+#include "./ghm_commands/materials/glow.h"
+#include "./ghm_commands/materials/interface.h"
+#include "./ghm_commands/materials/light.h"
+#include "./ghm_commands/materials/metal.h"
+#include "./ghm_commands/materials/plastic.h"
+#include "./ghm_commands/materials/spotlight.h"
+#include "./ghm_commands/materials/trans.h"
 
 //! Registers all the available commands in the API
 /*!
@@ -325,7 +336,114 @@ void registerGHMCommands(lua_State * L)
      */
     lua_register(L, "tube", createTube);
         
+    /* @APIfunction
+     
+     Adds a new Dielectric material to the GroundhogModel
+     
+     @param[required] data The table with the data
+     @return The name of the material
+     */
+    lua_register(L, "dielectric", createDielectric);
+        
+    /* @APIfunction
+     
+     Adds a new Glass material to the GroundhogModel
+     
+     @param[required] data The table with the data
+     @return The name of the material
+     */
+    lua_register(L, "glass", createGlass);
+               
+    /* @APIfunction
+     
+     Adds a new Glow material to the GroundhogModel
+     
+     @param[required] data The table with the data
+     @return The name of the material
+     */
+    lua_register(L, "glow", createGlow);
     
+    /* @APIfunction
+     
+     Adds a new Interface material to the GroundhogModel
+     
+     @param[required] data The table with the data
+     @return The name of the material
+     */
+    lua_register(L, "interface", createInterface);
+    
+    /* @APIfunction
+     
+     Adds a new Light material to the GroundhogModel
+     
+     @param[required] data The table with the data
+     @return The name of the material
+     */
+    lua_register(L, "light", createLight);
+
+    /* @APIfunction
+     
+     Adds a new Metal material to the GroundhogModel
+     
+     @param[required] data The table with the data
+     @return The name of the material
+     */
+    lua_register(L, "metal", createMetal);
+
+
+    /* @APIfunction
+     
+     Adds a new Plastic material to the GroundhogModel
+     
+     @param[required] data The table with the data
+     @return The name of the material
+     */
+    lua_register(L, "plastic", createPlastic);
+
+    /* @APIfunction
+     
+     Adds a new Spotlight material to the GroundhogModel
+     
+     @param[required] data The table with the data
+     @return The name of the material
+     */
+    lua_register(L, "spotlight", createSpotlight);
+
+    /* @APIfunction
+     
+     Adds a new Trans material to the GroundhogModel
+     
+     @param[required] data The table with the data
+     @return The name of the material
+     */
+    lua_register(L, "trans", createTrans);
+
+    /* @APIfunction
+     
+     Adds a new View to the GroundhogModel
+     
+     @param[required] data The table with the data
+     @return The name of the view
+     */
+    lua_register(L, "view", createView);
+
+    /* @APIfunction
+     
+     Returns a list of the views' names
+     
+     @param[required] data The table with the data
+     @return An array with the names of the views in the model
+     */
+    lua_register(L, "get_views_list", getViewsList);
+    
+    /* @APIfunction
+     
+     Returns a list of the views' names
+     
+     @param[required] data The table with the data
+     @return An array with the names of the views in the model
+     */
+    lua_register(L, "is_view", viewExists);
     
     /* =============================== */
     /* @APIgroup SET-OPTIONS FUNCTIONS */

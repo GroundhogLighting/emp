@@ -1,12 +1,15 @@
 auto_solve = false -- Do not solve tasks, as there will be none.
 
 function tdc1(s)
-    print("=> "..s)
+    print("\n=> "..s)
 end
 
 function tdc2(s)
     print("   ... "..s)
 end
+
+-- Header
+print("\n.... MODEL INFORMATION ...")
 
 -- Location
 tdc1("Location:")
@@ -29,6 +32,7 @@ end
 -- Materials
 materials = get_materials_list()
 nmaterials = #materials
+tdc1("There are "..nmaterials.." Materials in the model")
 
 for i=1,nmaterials do
     class = get_material_class(materials[i])    
@@ -55,3 +59,11 @@ for i=1,ndefs do
     tdc2(definitions[i].." has "..nobjects.." objects and "..ninstances.." ComponentInstances");
 end
 
+-- Views
+views = get_views_list()
+nviews = #views
+tdc1("There are "..nviews.." Views in the model. They are:")
+
+for i=1,nviews do        
+    tdc2(views[i]);
+end

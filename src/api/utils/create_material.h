@@ -1,4 +1,3 @@
-
 /*****************************************************************************
  Emp
  
@@ -29,30 +28,12 @@ extern "C" {
 #include "lauxlib.h"
 }
 
-#include "../emp_core/include/emp_core.h"
-
-
-//! Retrieves a list of the View objects in the GroundhogModel
-/*!
- @author German Molina
- @param[in] L The lua_State of the api
- @return the number of return values within the script
- */
-int getViewsList(lua_State * L);
-
-//! Checks if a View exists in a GroundhogModel
+//! Adds a new Material to the GroundhogModel
 /*!
  @author German Molina
  @param[in] L The lua state
+ @param[in] type The type of object to create
  @return the number of return values within the script
  */
-int viewExists(lua_State * L);
-
-//! Adds a new view to the model
-/*!
- @author German Molina
- @param[in] L The lua state
- @return the number of return values within the script
- */
-int createView(lua_State * L);
+int createMaterial(lua_State * L, const char * type);
 

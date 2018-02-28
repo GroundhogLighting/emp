@@ -34,8 +34,7 @@ void fillData(Cylinder * o, lua_State * L, int tableIndex)
 
 int createCylinder(lua_State * L)
 {
-    createOtype(L,"cylinder");
-    return 1;
+    return createOtype(L,"cylinder");    
 }
 
 

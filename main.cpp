@@ -60,27 +60,32 @@ int main(int argc, char* argv[]){
          
          /* SEARCH FOR SCRIPT */
          std::string script = argv[2];
-         // add the .lua if needed
-         if (!stringInclude(script, ".lua")) {
-             script = script + ".lua";
-         }
-         
-         // check if script exists
-         if (!fexists(script)) {
-             // if it does not exist, we look into the EMPATH
-             if (const char * glarepath = std::getenv(EMPATH)) {
-                 if (fexists(std::string(glarepath) + "/" + script)) {
-                     script = std::string(glarepath) + "/" + script;
-                 }
-                 else {
-                     FATAL(errorMessage, "Lua script '" + std::string(script) + "' not found (not even in "+ EMPATH +")");
+         if(script != "-"){
+             // Search for the script...
+             
+             // add the .lua if needed
+             if (!stringInclude(script, ".lua")) {
+                 script = script + ".lua";
+             }
+             
+             // check if script exists
+             if (!fexists(script)) {
+                 // if it does not exist, we look into the EMPATH
+                 if (const char * glarepath = std::getenv(EMPATH)) {
+                     if (fexists(std::string(glarepath) + "/" + script)) {
+                         script = std::string(glarepath) + "/" + script;
+                     }
+                     else {
+                         FATAL(errorMessage, "Lua script '" + std::string(script) + "' not found (not even in "+ EMPATH +")");
+                         return 1;
+                     }
+                 } else { // if there is no GLAREPATH variable, just error.
+                     FATAL(errorMessage, "Lua script '" + std::string(script) + "' not found");
                      return 1;
                  }
-             } else { // if there is no GLAREPATH variable, just error.
-                 FATAL(errorMessage, "Lua script '" + std::string(script) + "' not found");
-                 return 1;
              }
-         }
+             
+         }// else (i.e. script == "-"), we just want to load the model
          
          
          /* SEARCH FOR MODEL */
@@ -144,42 +149,44 @@ int main(int argc, char* argv[]){
          /* REGISTER TASKS */
          registerTasks(L);
          
-         
-         // Process LUA script
-         int status, result;
-         
-         // Load script
-         status = luaL_loadfile(L, &script[0]);
-         if (status) {
-             std::cerr <<  lua_tostring(L, -1) << std::endl;
-             return 1;
-         }
-         
-         // Solve script
-         result = lua_pcall(L, 0, LUA_MULTRET, 0);
-         if (result) {
-             std::cerr << lua_tostring(L, -1) << std::endl;
-             return 1;
-         }
-         
-         // Autosolve?
-         bool autoSolve = true; // defaults to true
-         lua_getglobal(L, LUA_AUTOSOLVE_VARIABLE);
-         // Check type
-         if (lua_type(L, 1) == LUA_TBOOLEAN) {
-             autoSolve = lua_toboolean(L, 1);
-         }
-         
-         // solve if required
-         if (autoSolve) {
-             nlohmann::json results = nlohmann::json();
-             if(taskManager.countTasks() == 0){
-                 WARN(x,"No tasks in TaskManager, so nothing to do... to avoid this message set 'auto_solve = false' in your script");
-                 return 0;
+         if(script != "-"){
+             // Process LUA script
+             int status, result;
+             
+             // Load script
+             status = luaL_loadfile(L, &script[0]);
+             if (status) {
+                 std::cerr <<  lua_tostring(L, -1) << std::endl;
+                 return 1;
              }
-             taskManager.solve(&results);
-             std::cout << results;
+             
+             // Solve script
+             result = lua_pcall(L, 0, LUA_MULTRET, 0);
+             if (result) {
+                 std::cerr << lua_tostring(L, -1) << std::endl;
+                 return 1;
+             }
+             
+             // Autosolve?
+             bool autoSolve = true; // defaults to true
+             lua_getglobal(L, LUA_AUTOSOLVE_VARIABLE);
+             // Check type
+             if (lua_type(L, 1) == LUA_TBOOLEAN) {
+                 autoSolve = lua_toboolean(L, 1);
+             }
+             
+             // solve if required
+             if (autoSolve) {
+                 nlohmann::json results = nlohmann::json();
+                 if(taskManager.countTasks() == 0){
+                     WARN(x,"No tasks in TaskManager, so nothing to do... to avoid this message set 'auto_solve = false' in your script");
+                     return 0;
+                 }
+                 taskManager.solve(&results);
+                 std::cout << results;
+             }
          }
+         
          
      }
     

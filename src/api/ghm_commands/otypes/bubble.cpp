@@ -32,7 +32,6 @@ void fillData(Bubble * o, lua_State * L, int tableIndex)
 
 int createBubble(lua_State * L)
 {
-    createOtype(L,"bubble");        
-    return 1;
+    return createOtype(L,"bubble");    
 }
 
