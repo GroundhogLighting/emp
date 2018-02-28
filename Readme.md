@@ -31,42 +31,89 @@ of the year. Just return the CBD metric I asked for)
 are just intermediate results... please delete them afterwards)
 
 Long story short, Emp is a (the first) wrapper to the [Emp_core](https://github.com/GroundhogLighting/emp_core)
-library (yes... similar names. Please read the next section to understand why). In this case,
+library (yes... similar names. Please read the History section to understand why). In this case,
 Emp provides the scripting capabilites (thanks to  [Lua](https://www.lua.org/))
 and [Emp_core](https://github.com/GroundhogLighting/emp_core) provides the
 calculations capabilities. **If you are only interested in [Emp_core](https://github.com/GroundhogLighting/emp_core),
 feel free to fork it and create your own project... respecting the License.**
 
-## An very simple example
+## Usage
+
+Emp always receives two inputs: a **model** file and a **script** file. The former is meant
+to provide a basis of geometry, materials, location, weather and other things; while the
+latter is meant to perform actions and calculatons over this basis.
+
+```bash
+emp $model script.lua
+```
+
+An example of this could be
+
+```bash
+emp $model calculate_daylight_factor #which would calculate the DF in al workplanes
+```
+
+### The EMPATH
+
+EMPATH is an environmental variable that keeps the Standard Scripts; that is, lua scripts that
+are meant to be used on a daily basis.
+
+This allows, for example, checking the information within a model by doing:
+
+```bash
+emp model getinfo
+```
+
+and the information regarding the number of layers, components, materials, views, workplanes
+and more will be written to the standard output.
+
+
+### Other uses
+
+Other uses are meant to provide basic information
+```
+emp {--help|-h}        : prints this message
+emp {--version|-v}        : prints version
+emp {--about|-a}        : prints about
+emp --checkpath        : prints the EMPATH variable
+```
+
+
+
+
+
+## Radiance's "Scene 0" written in Lua language
 
 ```lua
 -- SCENE 0
 
+-- Add a light material.
 bright = light {
     r = 100; g = 100; b = 100;
 }
 
-
+-- Add a plastic material
 red_plastic = plastic {
     r = 0.7; g = 0.05; b = 0.05;
     specularity = 0.05;
     roughness = 0.05;
 }
 
-
+-- Add a sphere made of red plastic
 sphere {
     center = {2, 1, 1.5};
     radius = 0.125;
     material = bright;
 }
 
+-- Add a sphere made of light (i.e. our light source)
 sphere {
     center = {0.7, 1.125, 0.625};
     radius = 0.125;
     material = red_plastic;
 }
 
-
+-- Add the view from which we want to see it
 view {
     name = "theView";
     position = {2.25, 0.375, 1};
