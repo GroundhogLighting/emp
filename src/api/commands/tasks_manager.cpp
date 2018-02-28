@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "../emp_core/include/emp_core.h"
 #include "./tasks_manager.h"
-#include "../common.h"
+#include "../utils/common.h"
 
 
 int solveTaskManager(lua_State * L)

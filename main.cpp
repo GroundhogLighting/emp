@@ -12,10 +12,10 @@ extern "C" {
 
 #include "./src/api/load_commands.h"
 #include "./src/api/load_tasks.h"
+#include "./src/api/load_ghm_commands.h"
 
 #include "./api.h"
 
-//class GroundhogModel;
 
 int main(int argc, char* argv[]){
     
@@ -104,19 +104,42 @@ int main(int argc, char* argv[]){
          initAPI(L,&model, &taskDictionary, &taskManager,argc,argv);
          
          /* REGISTER COMMANDS */
-         registerCommands(L);
+         registerGHMCommands(L);
          
          /* LOAD THE MODEL */
          if(strcmp(argv[1],"-")==0){
-             std::cout << "Just script processing " << std::endl;
-         } else if(stringInclude(argv[1],".ghm")){
-             std::cout << "Groundhog Model! " << std::endl;
+             
+         } else if(stringInclude(argv[1],".ghm") || stringInclude(argv[1],".lua")){
+             /* GroundhogModels are actually Lua scripts */
+             // Load script
+             int s,r;
+             s = luaL_loadfile(L,argv[1]);
+             if (s) {
+                 std::cerr <<  lua_tostring(L, -1) << std::endl;
+                 return 1;
+             }
+             
+             // Solve script
+             r = lua_pcall(L, 0, LUA_MULTRET, 0);
+             if (r) {
+                 std::cerr << lua_tostring(L, -1) << std::endl;
+                 return 1;
+             }
+             
+             // Reset the auto_solve to true.
+             lua_pushboolean(L,true);
+             lua_setglobal(L, LUA_AUTOSOLVE_VARIABLE);
+             
          } else if(stringInclude(argv[1],".skp")){
-             std::cout << "SketchUp Model! " << std::endl;
+             SKPreader reader = SKPreader(&model,false); // not verbose
+             reader.parseSKPModel(argv[1]);
          }else {
              FATAL(e,"Unrecognized model format");
              return 1;
          }
+         
+         /* REGISTER OTHER COMMANDS */
+         registerCommands(L);
          
          /* REGISTER TASKS */
          registerTasks(L);
@@ -150,6 +173,10 @@ int main(int argc, char* argv[]){
          // solve if required
          if (autoSolve) {
              nlohmann::json results = nlohmann::json();
+             if(taskManager.countTasks() == 0){
+                 WARN(x,"No tasks in TaskManager, so nothing to do... to avoid this message set 'auto_solve = false' in your script");
+                 return 0;
+             }
              taskManager.solve(&results);
              std::cout << results;
          }

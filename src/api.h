@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define EMP_API
 
 
-#include "../../emp_core/include/emp_core.h"
+#include "../emp_core/include/emp_core.h"
 #include "./taskfactory.h"
 
 

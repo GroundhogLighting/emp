@@ -27,7 +27,7 @@ extern "C" {
 }
 
 #include "../../emp_core/include/emp_core.h"
-#include "api/common.h"
+#include "api/utils/common.h"
 
 //! Register an RTraceTask
 /*!

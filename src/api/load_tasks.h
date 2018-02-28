@@ -27,7 +27,7 @@ extern "C" {
 #include "lauxlib.h"
 }
 
-#include "./common.h"
+#include "./utils/common.h"
 #include "./tasks.h"
 
 
@@ -41,8 +41,12 @@ extern "C" {
  @param[in] name The name of the task
  @param[in] f The TaskFactory
  */
-void registerTask(lua_State * L, const char * name, TaskFactory f);
-
+void registerTask(lua_State * L, const char * name, TaskFactory f)
+{
+    std::map<std::string, TaskFactory> * taskDictionary = getCurrentTaskDictionary(L);
+    
+    (*taskDictionary)[std::string(name)] = f;
+}
 
 //! Registers all the available tasks in the API
 /*!

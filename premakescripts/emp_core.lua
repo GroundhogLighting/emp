@@ -1,7 +1,7 @@
 project "emp_core"   
     
     kind "StaticLib"
-
+    defines {"AVOID_EMP_CORE_WARNINGS"}
     buildoptions { '-std=c++11','-stdlib=libc++' }
     language "C++" 
     runpathdirs { "." }
@@ -9,8 +9,9 @@ project "emp_core"
     targetdir(libs_dir.."/%{cfg.buildcfg}")
 
     files {                 
-        emp_core_dir.."/src/**",  
-        emp_core_dir.."/include/**",  
+        emp_core_dir.."/src/**.cpp",  
+        emp_core_dir.."/src/**.h",  
+        emp_core_dir.."/include/**.h",  
     }
    
     includedirs{        
@@ -28,13 +29,23 @@ project "emp_core"
     -- Add the platform specific
     if is_windows then
         defines { "WIN" }               
-
+        links {
+            third_party_dir.."/SketchUp/WIN/binaries/sketchup/x64/*",                        
+        }
     elseif is_macos then
         defines { "MACOS" }            
         runpathdirs { "libs" }
+        --includedirs
         linkoptions {            
             "-L "..emp_core_dir.."/libs/%{cfg.buildcfg}/tbb"
         }    
+        buildoptions {
+            "-F "..emp_core_dir.."/3rdparty/SketchUp/MACOS/headers",            
+        }
+        links {
+            emp_core_dir.."/3rdparty/SketchUp/MACOS/headers/SketchUpAPI.framework",
+        }
+        
     elseif is_linux then
         defines { "LINUX", "AVOID_SKP" }    
         links {            

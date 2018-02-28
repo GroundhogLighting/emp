@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../../emp_core/include/emp_core.h"
 #include "../api.h"
 #include "./utils/optionset_ext.h"
-
+#include "./utils/get_workplane.h"
 
 Task * workplaneIlluminanceFactory(lua_State * L)
 {
@@ -45,7 +45,7 @@ Task * workplaneIlluminanceFactory(lua_State * L)
     std::string wpName = otherOptions.getOption<std::string>("workplane");
     std::string sky = otherOptions.getOption<std::string>("sky");
     
-    Workplane * wp = getWorkplane(L,wpName);
+    Workplane * wp = getWorkplane(L,&wpName);
 
 
     RTraceTask * res = new RTraceTask(model, rtraceOptions, wp, &oconvOptions, sky);
@@ -261,7 +261,8 @@ Task * writeRadWorkplane(lua_State * L)
     fillOptionsFromLuaTable(&options, L, 1);
         
     // Get the workplane
-    Workplane * wp = getWorkplane(L,options.getOption<std::string>("workplane"));
+    std::string wpName = options.getOption<std::string>("workplane");
+    Workplane * wp = getWorkplane(L,&wpName);
     
     double maxArea = options.getOption<double>("max_area");
     double maxAspectRatio = options.getOption<double>("max_aspect_ratio");

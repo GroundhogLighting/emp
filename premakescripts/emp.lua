@@ -33,8 +33,7 @@ project "emp"
     -- Add the platform specific
     if is_windows then
         defines { "WIN" }    
-        links {
-            third_party_dir.."/SketchUp/WIN/binaries/sketchup/x64/*",                        
+        links {            
             emp_core_dir.."/3rdparty/intelTBB/lib/intel64/vc14/*",            
         }
         includedirs {
@@ -42,18 +41,17 @@ project "emp"
         }    
     elseif is_macos then
         defines { "MACOS" }    
-        
+                
+        linkoptions {           
+            "-L "..emp_core_dir.."/libs/%{cfg.buildcfg}/tbb"            
+        }    
+            
         buildoptions {
-            "-F "..third_party_dir.."/SketchUp/MACOS/headers",            
+            "-F "..emp_core_dir.."/3rdparty/SketchUp/MACOS/headers",            
         }
         links {
-            third_party_dir.."/SketchUp/MACOS/headers/SketchUpAPI.framework",
+            emp_core_dir.."/3rdparty/SketchUp/MACOS/headers/SketchUpAPI.framework",
         }
-        linkoptions {
-            "-F "..third_party_dir.."/SketchUp/MACOS/headers", 
-            "-L "..emp_core_dir.."/libs/%{cfg.buildcfg}/tbb",
-            "-v"
-        }    
     elseif is_linux then
         defines { "LINUX", "AVOID_SKP" }    
         links {

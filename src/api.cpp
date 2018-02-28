@@ -23,19 +23,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "./config_constants.h"
 
-#include "./api/common.h"
+#include "./api/utils/common.h"
 #include "../emp_core/include/emp_core.h"
 
 
 #include <utility>
 
 
-void registerTask(lua_State * L, const char * name, TaskFactory f)
-{
-  std::map<std::string, TaskFactory> * taskDictionary = getCurrentTaskDictionary(L);
-  
-  (*taskDictionary)[std::string(name)] = f;
-}
 
 
 

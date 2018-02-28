@@ -29,7 +29,6 @@ extern "C" {
 
 
 #include "./commands/tasks_manager.h"
-#include "./commands/api_io.h"
 
 
 //! Registers all the available commands in the API
@@ -39,26 +38,7 @@ extern "C" {
 */
 void registerCommands(lua_State * L)
 {
-  /* ======================== */
-  /* @APIgroup INPUT / OUTPUT */
-  /* ======================== */
-
-  /* @APIfunction
-
-  Throws an error and exits the script
-
-  @param[required] message The error message to show
-  */
-  lua_register(L, "raise", raise);
-
-  /* @APIfunction
-
-  Prints a warning to the standard error, but continues processing the
-  script
-
-  @param[required] message The message to warn
-  */
-  lua_register(L, "warn", warn);
+  
 
   
 

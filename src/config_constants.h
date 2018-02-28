@@ -22,7 +22,7 @@
 #define EMP_CONFIG_CONSTANTS_H
 
 #include "./versions.h"
-#include "../emp_core/include/emp_core.h"
+//#include "../emp_core/include/emp_core.h"
 
 
 /// The 'usage' message

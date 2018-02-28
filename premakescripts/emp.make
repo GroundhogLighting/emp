@@ -88,6 +88,7 @@ OBJECTS := \
 	$(OBJDIR)/gh_model.o \
 	$(OBJDIR)/options.o \
 	$(OBJDIR)/tasks.o \
+	$(OBJDIR)/optonset_ext.o \
 	$(OBJDIR)/api.o \
 
 RESOURCES := \
@@ -189,6 +190,14 @@ else
 endif
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/tasks.o: ../src/api/tasks.cpp
+	@echo $(notdir $<)
+ifeq (posix,$(SHELLTYPE))
+	$(SILENT) mkdir -p $(OBJDIR)
+else
+	$(SILENT) mkdir $(subst /,\\,$(OBJDIR))
+endif
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/optonset_ext.o: ../src/api/utils/optonset_ext.cpp
 	@echo $(notdir $<)
 ifeq (posix,$(SHELLTYPE))
 	$(SILENT) mkdir -p $(OBJDIR)
