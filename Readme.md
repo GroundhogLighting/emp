@@ -371,7 +371,7 @@ view {
 ```
 
 
-![Random components image](https://drive.google.com/file/d/1ntj9bgcUca68M10m-kv20LkU0PACCWpQ/view?usp=sharing)
+![Random components image]()
 
 ## A bit of history
 
