@@ -43,6 +43,7 @@ int printTaskManager(lua_State * L)
   if (n == 1) {
     checkArgType(L, LUA_TSTRING, 1);
     std::string filename = std::string(lua_tostring(L, 1));
+      
     getCurrentTaskManager(L)->print(&filename[0]);
   }
   else {

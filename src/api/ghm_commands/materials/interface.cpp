@@ -26,14 +26,10 @@
 
 void fillData(Interface * m, lua_State * L, int tableIndex)
 {
-    m->r1 = getNumberFromTableField(L, tableIndex, "r1");
-    m->g1 = getNumberFromTableField(L, tableIndex, "g1");
-    m->b1 = getNumberFromTableField(L, tableIndex, "b1");
+    getColorFromTableField(L, tableIndex,"color1", &(m->r1), &(m->g1),&(m->b1));
     m->refractionIndex1 = getNumberFromTableField(L, tableIndex, "refraction1");
     
-    m->r2 = getNumberFromTableField(L, tableIndex, "r2");
-    m->g2 = getNumberFromTableField(L, tableIndex, "g2");
-    m->b2 = getNumberFromTableField(L, tableIndex, "b2");
+    getColorFromTableField(L, tableIndex,"color2", &(m->r2), &(m->g2),&(m->b2));
     m->refractionIndex2 = getNumberFromTableField(L, tableIndex, "refraction2");
     
 }

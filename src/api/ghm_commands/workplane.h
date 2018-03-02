@@ -53,3 +53,11 @@ int countWorkplanePolygons(lua_State * L);
 @return the number of return values within the script
 */
 int workplaneExists(lua_State * L);
+
+//! Creates a new workplane in the model
+/*! 
+ @author German Molina
+ @param[in] L The lua state
+ @return the number of return values within the script
+ */
+int createWorkplane(lua_State * L);

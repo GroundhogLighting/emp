@@ -30,6 +30,18 @@ extern "C" {
 }
 
 
+// I believe it is better that some functions return the Stack as they received it.
+// This Macros will not really check the integrity of the stack, but at least
+// they will test the number of element in it.
+#ifdef _DEBUG
+
+#define INIT_STACK_CHECK_STACK_SIZE int initial_stack_size = lua_gettop(L);
+#define CHECK_STACK_SIZE if(lua_gettop(L) != initial_stack_size){ \
+std::cerr << "STACK SIZE ERROR in line : "<< std::to_string(__LINE__) << " of file " << __FILE__  << std::endl; \
+}
+
+#endif
+
 
 //! Retrieves the current GroundhogModel exposed to the API
 /*!
@@ -217,6 +229,22 @@ Vector3D getVectorFromTableField(lua_State * L, int tableIndex, const char * fie
  */
 std::vector<Point3D> getVectorOfPointsFromTableField(lua_State * L, int tableIndex, const char * fieldName);
 
+//! Retrieves R, G, and B values stored in the 'color' field in a Lua table
+/*!
+ Throws an error if something is wrong
+ 
+ @author German Molina
+ @param[in] L The lua_State
+ @param[in] tableIndex The location of the table in the stack
+ @param[in] fieldName The name of the field where the color is located
+ @param[out] r The pointer to the red component of the color
+ @param[out] g The pointer to the green component of the color
+ @param[out] b The pointer to the blue component of the color
+ @return A vector with all the points there
+ */
+void getColorFromTableField(lua_State * L, int tableIndex, const char * fieldName, double * r, double * g, double * b);
+
+
 //! Pushes a table of three numbers to a field in another table
 /*!
  Throws an error if something is wrong
@@ -287,6 +315,65 @@ std::string getStringFromTableField(lua_State * L, int tableIndex, const char * 
  */
 bool fieldExists(lua_State * L, int tableIndex, std::string fieldName);
 
+//! Checks if a certain field in a table matches a certain type
+/*!
+ Throws an error when the types do not match. Will also throw an error if
+ the Strict input is set to true, and the field does not exist
+ 
+ @author German Molina
+ @param[in] L The lua_State
+ @param[in] tableIndex The location of the table in the stack
+ @param[in] fieldName The name of the field where the Vector3D is located
+ @param[in] type The expected type
+ @param[in] string If true, throw an error when the field is inexistent
+ @return matches?
+ @note THIS METHOD PUSHES THE FIELD INTO THE STACK.
+ */
+bool checkFieldType(lua_State * L, int tableIndex, const char * fieldName, int type, bool strict);
 
+//! Checks if a certain field in a table matches a certain type... throws an error when not,
+/*!
+ Throws an error when the types do not match of ig the field does not exist
+ 
+ @author German Molina
+ @param[in] L The lua_State
+ @param[in] tableIndex The location of the table in the stack
+ @param[in] fieldName The name of the field where the Vector3D is located
+ @param[in] type The expected type
+ @return exists?
+ @note THIS METHOD PUSHES THE FIELD INTO THE STACK.
+ */
+bool checkFieldType(lua_State * L, int tableIndex, const char * fieldName, int type);
+
+
+//! Checks if a certain field in a table matches a certain type
+/*!
+ Throws an error when the types do not match. Will also throw an error if
+ the Strict input is set to true, and the field does not exist
+ 
+ @author German Molina
+ @param[in] L The lua_State
+ @param[in] tableIndex The location of the table in the stack
+ @param[in] i The position in the table to check
+ @param[in] type The expected type
+ @param[in] string If true, throw an error when the field is inexistent
+ @return matches?
+ @note THIS METHOD PUSHES THE FIELD INTO THE STACK.
+ */
+bool checkFieldType(lua_State * L, int tableIndex, int i, int type, bool strict);
+
+//! Checks if a certain field in a table matches a certain type... throws an error when not,
+/*!
+ Throws an error when the types do not match of ig the field does not exist
+ 
+ @author German Molina
+ @param[in] L The lua_State
+ @param[in] tableIndex The location of the table in the stack
+ @param[in] i The position in the table to check
+ @param[in] type The expected type
+ @return exists?
+ @note THIS METHOD PUSHES THE FIELD INTO THE STACK.
+ */
+bool checkFieldType(lua_State * L, int tableIndex, int i, int type);
 
 #endif

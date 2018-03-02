@@ -97,7 +97,7 @@ task {
 task {
     class = "write_materials";
     directory = out_dir.."/"..materials_directory;
-    filename = out_dir.."/"..materials_file;
+    filename = materials_file;
 }
 
 
@@ -120,7 +120,6 @@ task {
     directory = out_dir.."/"..photosensors_directory;
 }
 
-print_task_flow("flow1.txt")
 
 -- Write workplanes
 workplanes = get_workplanes_list()
@@ -139,7 +138,5 @@ for i=1,#workplanes do
         max_aspect_ratio = 1.3;
     }
 end
+    
 
-
-
-print_task_flow("flow2.txt")

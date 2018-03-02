@@ -41,5 +41,6 @@ debug/*
 test_outputs/*
 libs
 premakescripts/obj
+premakescripts/*.make
 
 **.DS_Store**

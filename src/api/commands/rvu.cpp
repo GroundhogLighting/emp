@@ -58,11 +58,11 @@ int review(lua_State * L)
     std::string("-vd")+ blank + std::to_string(d.getX()) + blank + std::to_string(d.getY()) + blank + std::to_string(d.getZ()) + blank +
     std::string("-vu")+ blank + std::to_string(u.getX()) + blank + std::to_string(u.getY()) + blank + std::to_string(u.getZ()) + blank +
     
-    std::string("-vh") + blank + std::to_string(vh) + blank +
-    std::string("-vv") + blank + std::to_string(vv) + blank +
+    std::string("-vh ") + std::to_string(vh) + blank +
+    std::string("-vv ") + std::to_string(vv) + blank +
     std::string("-vt") + std::string(inverseViewType[type]) + blank +
-    std::string("-va") + std::to_string(va) + blank +
-    std::string("-vo") + std::to_string(vo) ;
+    std::string("-va ") + std::to_string(va) + blank +
+    std::string("-vo ") + std::to_string(vo) ;
     
     // Create some OconvOptions
     OconvOptions oconvOptions = OconvOptions();
@@ -70,8 +70,22 @@ int review(lua_State * L)
     // Create a Task Manager
     TaskManager tm = TaskManager();
     
+    // Build sky
+    Date * date = model->getDate();
+    std::string month = std::to_string(date->getMonth());
+    std::string day = std::to_string(date->getDay());
+    std::string hour = std::to_string(date->getHour());
+    
+    Location * l = model->getLocation();
+    std::string lat = std::to_string(l->getLatitude());
+    std::string lon = std::to_string(l->getLongitude());
+    std::string albedo = std::to_string(l->getAlbedo());
+    std::string meridian = std::to_string(15*l->getTimeZone());
+    
+    std::string sky = "gensky "+month+" "+day+" "+hour+" -a "+lat+" -o "+lon+" -m " + meridian + " -g "+albedo;
+    
     // Create and add an Oconv task
-    OconvTask * oconvTask = new OconvTask(model, &oconvOptions);
+    AddSkyToOctree * oconvTask = new AddSkyToOctree(model, &oconvOptions, sky);
     tm.addTask(oconvTask);
     
     // Solve the model, so the
@@ -82,6 +96,7 @@ int review(lua_State * L)
     
     // Create some RTrace options
     RTraceOptions options = RTraceOptions();
+    options.setOption("ab", 2);
     std::string inlineOptions = options.getInlineVersion();
     
     // Build and run the command

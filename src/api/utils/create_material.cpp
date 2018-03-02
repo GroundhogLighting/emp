@@ -43,7 +43,9 @@ lua_pushstring(L,m->getType()->c_str()); \
 
 int createMaterial(lua_State * L, const char * type)
 {
-    
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     // Check the number of arguments
     checkNArguments(L, 1);
     
@@ -80,9 +82,13 @@ int createMaterial(lua_State * L, const char * type)
         sendError(L,"Fatal", &e[0]);
     }
     
-    // But add Class to the original table
+    // add Class to the original table
     lua_setfield(L,1,"class");
-        
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
     // Return the name
     lua_pushstring(L,name.c_str());
     

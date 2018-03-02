@@ -24,6 +24,9 @@
 
 bool fillOptionsFromLuaTable(OptionSet * options, lua_State * L, int tablePosition)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     for (json::iterator it = options->begin(); it != options->end(); ++it) {
         std::string optionName = it.key();
         auto value = it.value();
@@ -66,5 +69,8 @@ bool fillOptionsFromLuaTable(OptionSet * options, lua_State * L, int tablePositi
         // remove one value from the stack (or nil, if it was not there)
         lua_pop(L, 1);
     }
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
     return true;
 }

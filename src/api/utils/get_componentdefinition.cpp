@@ -24,6 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ComponentDefinition * getComponentDefinition(lua_State * L, std::string * componentDefinitionName)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     GroundhogModel * model = getCurrentModel(L);
     ComponentDefinition * cd = model->getComponentDefinitionByName(componentDefinitionName);
     
@@ -31,6 +34,9 @@ ComponentDefinition * getComponentDefinition(lua_State * L, std::string * compon
         std::string errmsg = "ComponentDefinition '" + *componentDefinitionName + "' does not exist";
         sendError(L, "No componentDefinitionName", &errmsg[0]);
     }
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
     
     return cd;
 }

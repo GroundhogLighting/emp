@@ -22,6 +22,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Workplane * getWorkplane(lua_State * L, std::string * workplaneName)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     GroundhogModel * model = getCurrentModel(L);
     Workplane * wp = model->getWorkplaneByName(workplaneName);
     
@@ -29,6 +32,9 @@ Workplane * getWorkplane(lua_State * L, std::string * workplaneName)
         std::string errmsg = "Workplane '" + *workplaneName + "' does not exist";
         sendError(L, "No Workplane", &errmsg[0]);
     }
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
     
     return wp;
 }

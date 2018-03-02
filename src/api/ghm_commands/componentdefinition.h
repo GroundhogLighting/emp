@@ -65,3 +65,11 @@ int countComponentDefinitionInstances(lua_State * L);
  */
 int componentDefinitionExists(lua_State * L);
 
+//! Creates a new component definition
+/*!
+ @author German Molina
+ @param[in] L The lua state
+ @return the number of return values within the script
+ */
+int createComponentDefinition(lua_State * L);
+

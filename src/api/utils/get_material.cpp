@@ -24,6 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Material * getMaterial(lua_State * L, std::string * materialName)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     GroundhogModel * model = getCurrentModel(L);
     Material * material = model->getMaterialByName(materialName);
     
@@ -31,6 +34,9 @@ Material * getMaterial(lua_State * L, std::string * materialName)
         std::string errmsg = "Material '" + *materialName + "' does not exist";
         sendError(L, "No Material", &errmsg[0]);
     }
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
     
     return material;
 }

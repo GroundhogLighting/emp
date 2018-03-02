@@ -86,3 +86,86 @@ int workplaneExists(lua_State * L)
     // return
 	return 1;
 }
+
+int createWorkplane(lua_State * L)
+{
+    // Check the number of arguments
+    checkNArguments(L, 1);
+    
+    // Check the type of argument
+    checkArgType(L, LUA_TTABLE, 1);
+    
+    // Get name
+    std::string name = requireNameFromTable(L,1);
+    
+    // Get model
+    GroundhogModel * model = getCurrentModel(L);
+
+    // Create a new polygon
+    Polygon3D * polygon = new Polygon3D();
+    
+    
+    /* FILL EXTERIOR LOOP */
+    Loop * exterior = polygon->getOuterLoopRef();
+    
+    std::vector <Point3D> extPoints = getVectorOfPointsFromTableField(L, 1, "vertices");
+    
+    size_t nExtPoints = extPoints.size();
+    
+    if(nExtPoints < 3){
+        std::string eMsg = "Exterior loop of a Workplane requires at least three vertices... only "+std::to_string(nExtPoints) + " were given";
+        sendError(L, "Usage", eMsg.c_str());
+    }
+    
+    for(size_t i = 0; i<nExtPoints; i++){
+        Point3D p = extPoints.at(i);
+        exterior->addVertex(new Point3D(p.getX(),p.getY(),p.getZ()));
+    }
+    
+    /* FILL INTERIOR LOOPS, IF THEY EXSIST */
+    size_t innerLoopCount = 0;
+    while(fieldExists(L, 1, "hole"+std::to_string(++innerLoopCount))){
+        
+        // Build the name of the field
+        std::string loopName = "hole"+std::to_string(innerLoopCount);
+        
+        // Add the loop to the polygon
+        Loop * loop = polygon->addInnerLoop();
+        
+        // Retrieve the points in that loop
+        std::vector <Point3D> points = getVectorOfPointsFromTableField(L, 1, loopName.c_str());
+        
+        // Check number of points
+        size_t nPoints = points.size();
+        if(nPoints < 3){
+            std::string eMsg = "Holes in a Workplane require at least three vertices... only "+std::to_string(nPoints) + " were given";
+            sendError(L, "Usage", eMsg.c_str());
+        }
+        
+        // Add them
+        for(size_t i = 0; i<nPoints; i++){
+            Point3D p = points.at(i);
+            loop->addVertex(new Point3D(p.getX(),p.getY(),p.getZ()));
+        }
+        
+    }
+    
+    if(fieldExists(L, 1, "normal")){
+        polygon->setNormal(getVectorFromTableField(L,1,"normal"));
+    }else{
+        // Try to calculate the normal
+        polygon->setNormal();
+        putVectorIntoTable(L,1,"normal",polygon->getNormal());
+    }
+    
+    model->addPolygonToWorkplane(&name, polygon);
+    
+    // return name
+    lua_pushstring(L,name.c_str());
+    
+    // And the table
+    lua_pushvalue(L,1);
+    
+    
+    return 2;
+}

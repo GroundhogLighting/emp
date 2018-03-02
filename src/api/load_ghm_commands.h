@@ -32,6 +32,7 @@ extern "C" {
 
 // GroundhogModel data
 #include "./ghm_commands/componentdefinition.h"
+#include "./ghm_commands/componentinstance.h"
 #include "./ghm_commands/layer.h"
 #include "./ghm_commands/workplane.h"
 #include "./ghm_commands/location.h"
@@ -39,6 +40,8 @@ extern "C" {
 #include "./ghm_commands/otype.h"
 #include "./ghm_commands/rtraceoptions.h"
 #include "./ghm_commands/view.h"
+#include "./ghm_commands/workplane.h"
+
 
 // Otype
 #include "./ghm_commands/otypes/bubble.h"
@@ -61,6 +64,9 @@ extern "C" {
 #include "./ghm_commands/materials/plastic.h"
 #include "./ghm_commands/materials/spotlight.h"
 #include "./ghm_commands/materials/trans.h"
+
+// Generators
+#include "./ghm_commands/generators/genbox.h"
 
 //! Registers all the available commands in the API
 /*!
@@ -122,6 +128,16 @@ void registerGHMCommands(lua_State * L)
     
     /* @APIfunction
      
+     Creates a new Workplane
+     
+     @param[required] workplane_name The name of the workplane
+     @return The number of polygons
+     */
+    lua_register(L, "workplane",createWorkplane);
+    
+    
+    /* @APIfunction
+     
      Retrieves an array with the layer names in the model
      
      @return workplane_array An array with the layer names
@@ -172,6 +188,16 @@ void registerGHMCommands(lua_State * L)
      @return exist? True or False
      */
     lua_register(L, "is_component_definition", componentDefinitionExists);
+    
+    /* @APIfunction
+     
+     Adds a Component Definition to the model
+     
+     @param[required] layer_name The name of the ComponentDefinition
+     @return exist? True or False
+     */
+    lua_register(L, "component", createComponentDefinition);
+    
     
     /* @APIfunction
      
@@ -444,6 +470,24 @@ void registerGHMCommands(lua_State * L)
      @return An array with the names of the views in the model
      */
     lua_register(L, "is_view", viewExists);
+    
+    /* @APIfunction
+     
+     Returns a list of the views' names
+     
+     @param[required] data The table with the data
+     @return An array with the names of the views in the model
+     */
+    lua_register(L, "box", genBox);
+    
+    /* @APIfunction
+     
+     Creates a new ComponentInstancex
+     
+     @param[required] data The table with the data     
+     */
+    lua_register(L, "instance", createComponentInstance);
+    
     
     /* =============================== */
     /* @APIgroup SET-OPTIONS FUNCTIONS */

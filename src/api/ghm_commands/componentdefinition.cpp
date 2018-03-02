@@ -112,3 +112,25 @@ int componentDefinitionExists(lua_State * L)
     return 1;
 }
 
+
+int createComponentDefinition(lua_State * L)
+{
+    // Check the number of arguments
+    checkNArguments(L, 1);
+    
+    // Check the type of argument
+    checkArgType(L, LUA_TSTRING, 1);
+    
+    // Retrieve the first argument
+    std::string name = lua_tostring(L, 1);
+            
+    // Create a ComponentDefinition and add it
+    GroundhogModel * model = getCurrentModel(L);
+    model->addComponentDefinition(&name);
+    
+    // Return the name
+    lua_pushstring(L, name.c_str());
+    
+    return 1;
+}
+

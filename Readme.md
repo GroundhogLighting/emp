@@ -44,24 +44,38 @@ to provide a basis of geometry, materials, location, weather and other things; w
 latter is meant to perform actions and calculatons over this basis.
 
 ```bash
-emp model script.lua
+emp model script.lua [arguments]
 ```
 
 An example of this could be
 
 ```bash
-emp model calculate_daylight_factor #which would calculate the DF in al workplanes
+# that is, call RVU in this model, and see the view called "someView"
+
+emp model.skp rvu someView
+
 ```
 
 ### The EMPATH
 
 EMPATH is an environmental variable that keeps the Standard Scripts; that is, lua scripts that
-are meant to be used on a daily basis.
+are meant to be used on a daily basis. Setting the empath is as simple as:
+
+```bash
+# On Linux and macOS
+
+export EMPATH=/some/directory/where/scripts/are/stored
+```
+
+```
+# On windows
+set EMPATH /some/directory/where/scripts/are/stored
+```
 
 This allows, for example, checking the information within a model by doing:
 
 ```bash
-emp model getinfo
+emp model getinfo # Note that the .lua is not strictly needed.
 ```
 
 and the information regarding the number of layers, components, materials, views, workplanes
@@ -108,9 +122,7 @@ Which in our Lua API is written as:
 
 ```lua
 plastic {
-    r = 0.7;
-    g = 0.05;
-    b = 0.05;
+    color = {0.7, 0.05, 0.05};
     specularity = 0.05;
     roughness = 0.05;
 }
@@ -133,53 +145,233 @@ This allows, for example, modifying the name of one of them very easily without 
 line of code below.
 * Views are part of the model as well. Every model has some views that are nicer or more important
 than others... and Emp tries to take this in consideration.
+* Components can be created in the model, and instanced as many times as required, positioning
+them in different places, and scaling them
+
 
 ```lua
+-- =========
 -- SCENE 0
+-- =========
 
--- Add a light material.
+-- ADD GEOMETRY AND MATERIALS
+-- ==========================
+
+-- This is the material for my lightsource
 bright = light {
-    name = "bright"
-    r = 100; g = 100; b = 100;
+    name = "bright";
+    color = {100, 100, 100};
 }
 
--- Add a plastic material
+-- this is the material for my test ball:
 red_plastic = plastic {
-    r = 0.7; g = 0.05; b = 0.05;
+    color = {0.7, 0.05, 0.05};
     specularity = 0.05;
     roughness = 0.05;
 }
 
--- Add a sphere made of red plastic
+-- here is the light source
 sphere {
     center = {2, 1, 1.5};
     radius = 0.125;
     material = bright;
 }
 
--- Add a sphere made of light (i.e. our light source)
+-- here is the ball
 sphere {
     center = {0.7, 1.125, 0.625};
     radius = 0.125;
     material = red_plastic;
 }
 
--- Add the view from which we want to see it
+-- the wall material
+gray_paint = plastic {
+    name = "gray_paint";
+    color = {0.5, 0.5, 0.5};
+    specularity = 0;
+    roughness = 0;
+}
+
+-- a box-shaped room
+box {
+    material = gray_paint;
+    size = {3, 2, 1.75};
+}
+
+-- Material for a shiny blue box
+blue_plastic = plastic {
+    color = {0.1, 0.1, 0.6};
+    specularity = 0.05;
+    roughness = 0.1;
+}
+
+-- CREATE COMPONENTS
+-- =================
+
+the_box = component("box")
+
+-- ADD GEOMETRY TO THEM
+-- =====================
+
+box {
+    component  = the_box;
+    material = blue_plastic;
+    size = { 0.5, 0.5, 0.5}
+}
+
+-- INSTANCE THEM
+-- ==============
+instance {
+    definition = the_box;
+    position = {0.5, 0.75, 0};
+    rz = 15;
+}
+
+
+-- ADD VIEWS
+-- =========
+
 view {
     name = "theView";
     position = {2.25, 0.375, 1};
     direction = {-0.25, 0.125, -0.125};
 }
+```
+## **A very simple script**: Visualizing Radiance's "Scene 0"
+
+We now have a model... how do we visualize it? EMPATH has a standard script called rvu.lua. It
+allows calling RVU program easily, creating the necessary octrees, and deleting them afterwards.
+
+```bash
+# I know there is an rvu.lua file in the EMPATH directory
+emp scene0.ghm rvu
+```
+
+Now... what is in the script file ?
+
+```lua
+-- rvu.lua
+
+--Set the Auto Solve to false ... this will be explained later
+auto_solve = false
+
+
+-- Find a list of views in the model
+views = get_views_list()
+
+-- Try to find the given view...
+-- Use the first argument given (i.e. argv[1]). If it does not exist, use the first view in the model
+view_name = argv[1] or views[1]
+
+-- Ensure that the view exist
+if not is_view(view_name) then
+    raise("View "..view_name.." does not exist") -- This will throw an error
+end
+
+-- Call the Radiance's RVU program
+review(view_name)
 
 ```
 
-## **A very simple script**: Visualizing Radiance's "Scene 0"
+Note that `rvu.lua` is a lua script should be stored in the EMPATH... otherwise, the call would be
 
+```bash
+# I know there is an rvu.lua file in the EMPATH directory
+emp scene0.ghm ./full/path/to/rvu
+```
 
 
 ## **Radiance, on steroids**: Sort of Radiance's "Scene 0", but with randomness
 
 
+Lets see a bit of the good things of using a programming language instead of just text files and Unix files.
+
+```lua
+-- CREATE MATERIALS
+-- ================
+
+a_plastic = plastic {
+    color = {0.6, 0.6, 0.6};
+    specularity = 0.05;
+    roughness = 0.01;
+}
+
+red_plastic = plastic {
+    color = {0.7, 0.05, 0.05};
+    specularity = 0.05;
+    roughness = 0.05;
+}
+
+ground_material = plastic {
+    color = {0.2, 0.2, 0.2};
+    specularity = 0;
+    roughness = 0;
+}
+
+-- ADD GROUND
+-- ==========
+
+ring {
+    material = ground_material;
+    center = {0,0,-5};
+    direction = {0,0,1};
+    inner_radius = 0;
+    outer_radius = 20;
+}
+
+-- CREATE A COMPONENT
+-- ==================
+
+a_component = component("my_component")
+
+sphere {
+    component  = a_component;
+    material = a_plastic;
+    center = {-0.5, 0, 0};
+    radius = 0.2;
+}
+
+sphere {
+    component  = a_component;
+    material = a_plastic;
+    center = {0.5, 0, 0};
+    radius = 0.2;
+}
+
+cylinder {
+    component  = a_component;
+    material = red_plastic;
+    start = {-0.5, 0, 0};
+    finish = {0.5, 0, 0};
+    radius = 0.05;
+}
+
+-- ADD 50 RANDOM INSTANCES
+-- =======================
+
+for i=1,50 do
+    instance {
+        definition = a_component;
+        position = {math.random()*10, math.random()*10, math.random()*10};
+        rz = math.random()*360;
+        rz = math.random()*360;
+        ry = math.random()*360;
+    }
+end
+
+
+-- ADD A VIEW
+-- ===========
+
+view {
+    name = "theView";
+    position = {15, 15, 15};
+    direction = {-1, -1, -1};
+}
+```
+
+
+![Random components image](https://drive.google.com/file/d/1ntj9bgcUca68M10m-kv20LkU0PACCWpQ/view?usp=sharing)
 
 ## A bit of history
 

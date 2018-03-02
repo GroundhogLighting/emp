@@ -1,4 +1,6 @@
 
+
+
 /*****************************************************************************
  Emp
  
@@ -19,22 +21,25 @@
  
  *****************************************************************************/
 
-#include "./light.h"
-#include "../../utils/common.h"
-#include "../../utils/get_layer.h"
-#include "../../utils/create_material.h"
+#pragma once
 
-void fillData(Light * m, lua_State * L, int tableIndex)
-{
-    getColorFromTableField(L, tableIndex,"color", &(m->r), &(m->g),&(m->b));
+
+// Include LUA headers
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 }
 
-int createLight(lua_State * L)
-{
-    return createMaterial(L,"light");    
-}
+#include "../emp_core/include/emp_core.h"
 
-
+//! Adds 6 faces in the model, generating a Box
+/*!
+ @author German Molina
+ @param[in] L The lua_State of the api
+ @return the number of return values within the script
+ */
+int genBox(lua_State * L);
 
 
 

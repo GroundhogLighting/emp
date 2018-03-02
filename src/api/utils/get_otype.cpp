@@ -24,6 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Otype * getOtype(lua_State * L, std::string * objectName)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     GroundhogModel * model = getCurrentModel(L);
     Otype * object = model->getOtypeByName(objectName);
     
@@ -31,6 +34,8 @@ Otype * getOtype(lua_State * L, std::string * objectName)
         std::string errmsg = "Object '" + *objectName + "' does not exist";
         sendError(L, "No Object", &errmsg[0]);
     }
-    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
     return object;
 }

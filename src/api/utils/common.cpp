@@ -25,26 +25,53 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 GroundhogModel * getCurrentModel(lua_State * L)
 {
-	lua_getglobal(L, LUA_MODEL_VARIABLE);
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+	
+    lua_getglobal(L, LUA_MODEL_VARIABLE);
 	GroundhogModel * model = (GroundhogModel *)lua_touserdata(L, lua_gettop(L));
 	lua_pop(L, 1);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
 	return model;
 }
 
 TaskManager * getCurrentTaskManager(lua_State * L)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    
 	lua_getglobal(L, LUA_TASKMANAGER_VARIABLE);
 	TaskManager * taskManager = (TaskManager *)lua_touserdata(L, lua_gettop(L));
 	lua_pop(L, 1);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
 	return taskManager;
 }
 
 
 std::map<std::string, TaskFactory> * getCurrentTaskDictionary(lua_State * L)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    
   lua_getglobal(L, LUA_TASKDICTIONARY_VARIABLE);
   std::map<std::string,TaskFactory> * taskDictionary = (std::map<std::string, TaskFactory> *)lua_touserdata(L, lua_gettop(L));
   lua_pop(L, 1);
+
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
   return taskDictionary;
 }
 
@@ -104,7 +131,7 @@ void argTypeError(lua_State * L, int expectedType, int argPoisition)
 
 void executionError(lua_State * L, const char * err)
 {
-  sendError(L, "Execition error", err);
+  sendError(L, "Execution error", err);
 }
 
 void sendError(lua_State * L, const char * kind, const char * err)
@@ -133,218 +160,308 @@ void missingOption(lua_State * L, std::string optionName, std::string optionType
 }
 
 
+bool checkFieldType(lua_State * L, int tableIndex, const char * fieldName, int type, bool strict)
+{
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    // Ensure element in tableIndex is a Table
+    checkArgType(L, LUA_TTABLE, tableIndex);
+    
+    
+    int actualType = lua_getfield(L, tableIndex, fieldName);
+    
+    if(type == actualType){
+        return true;
+    }else if(actualType == LUA_TNIL){
+        if(strict){
+            missingOption(L, fieldName, lua_typename(L,type));
+            return false;
+        }else{
+            return false;
+        }
+    }else {
+        badOptionError(L, fieldName, lua_typename(L,actualType), lua_typename(L,type));
+        return false;
+    }
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
+    return true;
+}
+
+bool checkFieldType(lua_State * L, int tableIndex, const char * fieldName, int type)
+{
+    return checkFieldType(L, tableIndex, fieldName, type, true);
+}
+
+bool checkFieldType(lua_State * L, int tableIndex, int i, int type, bool strict)
+{
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    
+    // Ensure element in tableIndex is a Table
+    checkArgType(L, LUA_TTABLE, tableIndex);
+    
+    int actualType = lua_rawgeti(L,tableIndex,i);
+    
+    if(type == actualType){
+        return true;
+    }else if(actualType == LUA_TNIL){
+        if(strict){
+            missingOption(L, std::to_string(i), lua_typename(L,type));
+            return false;
+        }else{
+            return false;
+        }
+    }else {
+        badOptionError(L, std::to_string(i), lua_typename(L,actualType), lua_typename(L,type));
+        return false;
+    }
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
+    return true;
+}
+
+bool checkFieldType(lua_State * L, int tableIndex, int i, int type)
+{
+    return checkFieldType(L, tableIndex, i, type, true);
+}
+
 std::string requireNameFromTable(lua_State * L, int tableIndex)
 {
-    std::string ret;
-    if(lua_getfield(L,tableIndex, "name") == LUA_TSTRING){
-        ret = std::string(lua_tostring(L,lua_gettop(L)));
-    }else{
-        missingOption(L,"name","string");
-        ret = "dummy";
-    }
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    
+    checkFieldType(L, tableIndex,"name",LUA_TSTRING);
+    std::string ret = lua_tostring(L,lua_gettop(L));
     lua_pop(L,1);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
     return ret;
 }
 
 std::string getNameFromTable(lua_State * L, int tableIndex)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    
     std::string ret;
-    if(lua_getfield(L,tableIndex, "name") == LUA_TSTRING){
-        ret = std::string(lua_tostring(L,lua_gettop(L)));
+    if(checkFieldType(L, tableIndex,"name",LUA_TSTRING,false)){
+        ret = lua_tostring(L,lua_gettop(L));
     }else{
-        // This is my intention of generatint a unique id
         ret = std::to_string(rand()%rand());
     }
-    lua_pop(L,1); // Remove the NIL value
+    lua_pop(L,1);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
     return ret;
+    
 }
 
 Point3D getPointFromTableField(lua_State * L, int tableIndex, const char * fieldName)
 {
-    // stack top == 1
-    int type = lua_getfield(L,tableIndex,fieldName);
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     
-    // stack top == 2
-    if(type == LUA_TTABLE){
-        int newTableIndex = tableIndex + 1;
-        
-        // Get the values ... stack == 3
-        lua_rawgeti(L,newTableIndex,1);
-        double x = lua_tonumber(L,lua_gettop(L));
-        
-        // ... stack == 4
-        lua_rawgeti(L,newTableIndex,2);
-        double y = lua_tonumber(L,lua_gettop(L));
-        
-        //... stack == 5
-        lua_rawgeti(L,newTableIndex,3);
-        double z = lua_tonumber(L,lua_gettop(L));
-        
-        lua_pop(L,4);
-        // ... stack == 1
-        return Point3D(x,y,z);
-        
-    }else if(type == LUA_TNIL){
-        missingOption(L,std::string(fieldName),"table");
-        return Point3D(0,0,0);
-    }else{
-        badOptionError(L,std::string(fieldName),lua_typename(L, type),"table");
-        return Point3D(0,0,0);
-    }
+    int n = lua_gettop(L);
+    checkFieldType(L, tableIndex, fieldName, LUA_TTABLE);
+    n = lua_gettop(L);
+    int newTableIndex = lua_gettop(L);
+    
+    // Get the values ... stack == 3
+    lua_rawgeti(L,newTableIndex,1);
+    double x = lua_tonumber(L,lua_gettop(L));
+    
+    // ... stack == 4
+    lua_rawgeti(L,newTableIndex,2);
+    double y = lua_tonumber(L,lua_gettop(L));
+    
+    //... stack == 5
+    lua_rawgeti(L,newTableIndex,3);
+    double z = lua_tonumber(L,lua_gettop(L));
+    
+    lua_pop(L,4);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
+    // ... stack == 1
+    return Point3D(x,y,z);
+    
 }
 
 
 Vector3D getVectorFromTableField(lua_State * L, int tableIndex, const char * fieldName)
 {
-    // stack top == tableIndex
-    int type = lua_getfield(L,tableIndex,fieldName);
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     
-    // stack top == tableIndex + 1
-    if(type == LUA_TTABLE){
-        int newTableIndex = tableIndex + 1;
-        
-        // Get the values ... stack == tableIndex + 2
-        lua_rawgeti(L,newTableIndex,1);
-        double x = lua_tonumber(L,lua_gettop(L));
-        
-        // ... stack == tableIndex + 3
-        lua_rawgeti(L,newTableIndex,2);
-        double y = lua_tonumber(L,lua_gettop(L));
-        
-        //... stack == tableIndex + 4
-        lua_rawgeti(L,newTableIndex,3);
-        double z = lua_tonumber(L,lua_gettop(L));
-        
-        lua_pop(L,4);
-        // ... stack == tableIndex
-        return Vector3D(x,y,z);
-        
-    }else if(type == LUA_TNIL){
-        missingOption(L,std::string(fieldName),"table");
-        return Vector3D(0,0,0);
-    }else{
-        badOptionError(L,std::string(fieldName),lua_typename(L, type),"table");
-        return Vector3D(0,0,0);
-    }
+    checkFieldType(L, tableIndex, fieldName, LUA_TTABLE);
+    
+    int newTableIndex = tableIndex + 1;
+    
+    // Get the values ... stack == 3
+    checkFieldType(L, newTableIndex, 1, LUA_TNUMBER);
+    double x = lua_tonumber(L,lua_gettop(L));
+    
+    // ... stack == 4
+    checkFieldType(L, newTableIndex, 2, LUA_TNUMBER);
+    double y = lua_tonumber(L,lua_gettop(L));
+    
+    //... stack == 5
+    checkFieldType(L, newTableIndex, 3, LUA_TNUMBER);
+    double z = lua_tonumber(L,lua_gettop(L));
+    
+    lua_pop(L,4);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
+    // ... stack == 1
+    return Vector3D(x,y,z);
+    
+    
 }
 
 bool getPointFromTableIndex(lua_State * L, Point3D * p, int tableIndex, int i)
 {
-    // stack top == tableIndex
-    int type = lua_rawgeti(L, tableIndex, i);
-    
-    // stack top == tableIndex + 1
-    if(type == LUA_TTABLE){
-        int newTableIndex = tableIndex + 1;
-        
-        // Get the values ... stack == tableIndex + 2
-        lua_rawgeti(L,newTableIndex,1);
-        double x = lua_tonumber(L,lua_gettop(L));
-        
-        // ... stack == tableIndex + 3
-        lua_rawgeti(L,newTableIndex,2);
-        double y = lua_tonumber(L,lua_gettop(L));
-        
-        //... stack == tableIndex + 4
-        lua_rawgeti(L,newTableIndex,3);
-        double z = lua_tonumber(L,lua_gettop(L));
-        
-        lua_pop(L,4);
-        *p = Point3D(x,y,z);
-        
-        // ... stack == tableIndex
-        return true;
-        
-    }else if(type == LUA_TNIL){
-        lua_pop(L,1);
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    if(!checkFieldType(L, tableIndex, i, LUA_TTABLE, false)){
         return false;
-    }else{
-        badOptionError(L,std::to_string(i),lua_typename(L, type),"table");
-        return false; // to avoid warnings
     }
-    return false; // to avoid warnings
+    
+    int newTableIndex = lua_gettop(L);
+    
+    
+    checkFieldType(L, newTableIndex, 1, LUA_TNUMBER);
+    double x = lua_tonumber(L,lua_gettop(L));
+    
+    checkFieldType(L, newTableIndex, 2, LUA_TNUMBER);
+    double y = lua_tonumber(L,lua_gettop(L));
+    
+    checkFieldType(L, newTableIndex, 3, LUA_TNUMBER);
+    double z = lua_tonumber(L,lua_gettop(L));
+    
+    lua_pop(L,4);
+    *p = Point3D(x,y,z);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
+    // ... stack == tableIndex
+    return true;
+    
     
 }
 
 
+
 std::vector<Point3D> getVectorOfPointsFromTableField(lua_State * L, int tableIndex, const char * fieldName)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     std::vector<Point3D> res = std::vector<Point3D>();
     
-    // stack top == tableIndex
-    int type = lua_getfield(L,tableIndex,fieldName);
+    checkFieldType(L, tableIndex, fieldName, LUA_TTABLE);
     
-    // stack top == tableIndex + 1
-    if(type == LUA_TTABLE){
-        int newTableIndex = tableIndex + 1;
-        Point3D p = Point3D(0,0,0);
-        int pCount = 0;
-        int n = lua_gettop(L);
-        while(getPointFromTableIndex(L,&p,newTableIndex,++pCount)){
-            res.push_back(p);
-            n = lua_gettop(L);
-        }
+    int newTableIndex = lua_gettop(L);
+    Point3D p = Point3D(0,0,0);
+    int pCount = 0;
+    
+    while(getPointFromTableIndex(L,&p,newTableIndex,++pCount)){
+        res.push_back(p);
         n = lua_gettop(L);
-        lua_pop(L,1);
-        n = lua_gettop(L);
-    }else if(type == LUA_TNIL){
-        missingOption(L,std::string(fieldName),"table");
-    }else{
-        badOptionError(L,std::string(fieldName),lua_typename(L, type),"table");
     }
+    
+    lua_pop(L,2);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
     return res;
 }
 
 double getNumberFromTableField(lua_State * L, int tableIndex, const char * fieldName)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     // stack top == tableIndex
-    int type = lua_getfield(L,tableIndex,fieldName);
+    checkFieldType(L, tableIndex, fieldName, LUA_TNUMBER);
+    double ret = lua_tonumber(L,lua_gettop(L));
+    lua_pop(L,1);
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
     
-    // stack top == tableIndex + 1
-    if(type == LUA_TNUMBER){
-        double ret = lua_tonumber(L,tableIndex + 1);
-        lua_pop(L,1);
-        return ret;
-    }else if(type == LUA_TNIL){
-        missingOption(L,std::string(fieldName),"number");
-        return 0;
-    }else{
-        badOptionError(L,std::string(fieldName),lua_typename(L, type),"number");
-        return 0;
-    }
+    return ret;
+    
 }
 
 std::string getStringFromTableField(lua_State * L, int tableIndex, const char * fieldName)
 {
-    // stack top == tableIndex
-    int type = lua_getfield(L,tableIndex,fieldName);
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    checkFieldType(L, tableIndex, fieldName, LUA_TSTRING);
+    std::string ret = std::string(lua_tostring(L,lua_gettop(L)));
+    lua_pop(L,1);
     
-    // stack top == tableIndex + 1
-    if(type == LUA_TSTRING){
-        std::string ret = lua_tostring(L,tableIndex + 1);
-        lua_pop(L,1);
-        return ret;
-    }else if(type == LUA_TNIL){
-        missingOption(L,std::string(fieldName),"string");
-        return 0;
-    }else{
-        badOptionError(L,std::string(fieldName),lua_typename(L, type),"string");
-        return 0;
-    }
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
+    return ret;
+    
 }
 
 bool fieldExists(lua_State * L, int tableIndex, std::string fieldName)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     // stack top == tableIndex
     int type = lua_getfield(L,tableIndex,fieldName.c_str());
     
     bool res = (type != LUA_TNIL);
     lua_pop(L,1);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
     return res;    
 }
 
 void putVectorIntoTable(lua_State * L, int tableIndex, const char * fieldName, Vector3D v)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     int n = lua_gettop(L);
     
     // Create a new table.
@@ -362,11 +479,17 @@ void putVectorIntoTable(lua_State * L, int tableIndex, const char * fieldName, V
     lua_seti(L, n+1, 3);
     
     lua_setfield(L, tableIndex, fieldName);
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
     return;
 }
 
 void putPointIntoTable(lua_State * L, int tableIndex, const char * fieldName, Point3D p)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     int n = lua_gettop(L);
     
     // Create a new table.
@@ -384,7 +507,37 @@ void putPointIntoTable(lua_State * L, int tableIndex, const char * fieldName, Po
     lua_seti(L, n+1, 3);
     
     lua_setfield(L, tableIndex, fieldName);
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
     return;
 }
 
+void getColorFromTableField(lua_State * L, int tableIndex, const char * fieldName, double * r, double * g, double * b)
+{
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    checkFieldType(L, tableIndex, fieldName, LUA_TTABLE);
+    
+    int newTableIndex = lua_gettop(L);
+    
+    // Get the values ... stack == tableIndex + 2
+    checkFieldType(L, newTableIndex, 1, LUA_TNUMBER);
+    *r = lua_tonumber(L,lua_gettop(L));
+    
+    // ... stack == tableIndex + 3
+    checkFieldType(L, newTableIndex, 2, LUA_TNUMBER);
+    *g = lua_tonumber(L,lua_gettop(L));
+    
+    //... stack == tableIndex + 4
+    checkFieldType(L, newTableIndex, 3, LUA_TNUMBER);
+    *b = lua_tonumber(L,lua_gettop(L));
+    
+    lua_pop(L,4);
+    // ... stack == tableIndex
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+}
 

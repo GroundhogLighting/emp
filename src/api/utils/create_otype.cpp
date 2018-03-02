@@ -46,6 +46,9 @@ o->setMaterial(material)
 
 int createOtype(lua_State * L, const char * type)
 {
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
     // Check the number of arguments
     checkNArguments(L, 1);
     
@@ -100,6 +103,9 @@ int createOtype(lua_State * L, const char * type)
     // Add the name to the original table
     lua_pushstring(L,name.c_str());
     lua_setfield(L,1,"name");
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
     
     // Return the name
     lua_pushstring(L,name.c_str());

@@ -26,9 +26,7 @@
 
 void fillData(Glow * m, lua_State * L, int tableIndex)
 {
-    m->r = getNumberFromTableField(L, tableIndex, "r");
-    m->g = getNumberFromTableField(L, tableIndex, "g");
-    m->b = getNumberFromTableField(L, tableIndex, "b");
+    getColorFromTableField(L, tableIndex,"color", &(m->r), &(m->g),&(m->b));
     m->maxRadius = getNumberFromTableField(L, tableIndex, "max_rad");
     
 }

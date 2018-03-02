@@ -26,10 +26,7 @@
 
 void fillData(Glass * m, lua_State * L, int tableIndex)
 {
-    m->r = getNumberFromTableField(L, tableIndex, "r");
-    m->g = getNumberFromTableField(L, tableIndex, "g");
-    m->b = getNumberFromTableField(L, tableIndex, "b");
-    
+    getColorFromTableField(L, tableIndex,"color", &(m->r), &(m->g),&(m->b));
 }
 
 int createGlass(lua_State * L)
