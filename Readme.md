@@ -371,7 +371,7 @@ view {
 ```
 
 
-![Random components image]()
+![Random components image](https://github.com/GroundhogLighting/emp/raw/master/ReadmeImages/image.jpeg)
 
 ## A bit of history
 
