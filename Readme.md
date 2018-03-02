@@ -35,7 +35,7 @@ library (yes... similar names. Please read the History section to understand why
 Emp provides the scripting capabilites (thanks to  [Lua](https://www.lua.org/))
 and [Emp_core](https://github.com/GroundhogLighting/emp_core) provides the
 calculations capabilities. **If you are only interested in [Emp_core](https://github.com/GroundhogLighting/emp_core),
-feel free to fork it and create your own project... respecting the License.**
+feel free to contribute to it, and use it.**
 
 ## Usage
 
@@ -237,6 +237,8 @@ view {
     direction = {-0.25, 0.125, -0.125};
 }
 ```
+![Scene 0 image](https://github.com/GroundhogLighting/emp/raw/master/ReadmeImages/scene0.jpeg)
+
 ## **A very simple script**: Visualizing Radiance's "Scene 0"
 
 We now have a model... how do we visualize it? EMPATH has a standard script called rvu.lua. It
@@ -281,10 +283,11 @@ emp scene0.ghm ./full/path/to/rvu
 ```
 
 
-## **Radiance, on steroids**: Sort of Radiance's "Scene 0", but with randomness
+## **Sort of Radiance**: Lets add some randomness
 
 
 Lets see a bit of the good things of using a programming language instead of just text files and Unix files.
+We will add a single component 50 times in a random positions.
 
 ```lua
 -- CREATE MATERIALS
@@ -371,7 +374,27 @@ view {
 ```
 
 
-![Random components image](https://github.com/GroundhogLighting/emp/raw/master/ReadmeImages/image.jpeg)
+![Random components image](https://github.com/GroundhogLighting/emp/raw/master/ReadmeImages/random_components.jpeg)
+
+## **Reading a SketchUp file**: Writing down a model is not very convenient
+
+Lets grab a model created in other tool. For example, SketchUp.
+
+![Random components image](https://github.com/GroundhogLighting/emp/raw/master/ReadmeImages/SKP_screenshot.png)
+
+### We can previsualize it by doing
+
+```bash
+emp file.skp rvu
+```
+
+Or export it to Radiance format by
+
+```bash
+emp file.skp to_radiance
+```
+
+![Random components image](https://github.com/GroundhogLighting/emp/raw/master/ReadmeImages/SKP.jpeg)
 
 ## A bit of history
 
