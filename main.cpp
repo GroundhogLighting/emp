@@ -11,16 +11,33 @@ extern "C" {
 }
 
 #include "./src/api/load_commands.h"
-#include "./src/api/load_tasks.h"
-#include "./src/api/load_ghm_commands.h"
 
 #include "./api.h"
 
+std::vector< std::string > getEmpath()
+{
+    std::vector<std::string> ret =std::vector<std::string>();
+    
+    std::string empath = std::string(std::getenv(EMPATH));
+    
+    size_t start = 0;
+    size_t found = empath.find(":", start);
+    while (found != std::string::npos) {
+        ret.push_back(empath.substr(start, found-start));
+        start = found+1;
+        found = empath.find(":", start+1);
+    }
+    
+    if(empath.substr(start) != ""){
+        ret.push_back(empath.substr(start));
+    }
+    
+    return ret;
+}
 
 int main(int argc, char* argv[]){
     
     if (argc == 1){
-        FATAL(errmsg, "Incorrect emp usage\n");
         std::cout << USAGE << std::endl;
         return 1;
     }
@@ -42,8 +59,14 @@ int main(int argc, char* argv[]){
         return 0;
     }
     else if (strcmp(argv[1], "--checkpath") == 0 ) {
-        if (const char * glarepath = std::getenv(EMPATH)) {
-            std::cout << glarepath << std::endl;
+        if (const char * empath = std::getenv(EMPATH)) {
+            
+            std::vector< std::string > emp_dirs = getEmpath();
+            std::cout << "EMPATH is defined as the following directories:" << std::endl;
+            
+            for(auto s : emp_dirs)
+                std::cout << "  "<< s << std::endl;
+            
             return 0;
         }
         else {
@@ -70,15 +93,27 @@ int main(int argc, char* argv[]){
              
              // check if script exists
              if (!fexists(script)) {
+                 
                  // if it does not exist, we look into the EMPATH
-                 if (const char * glarepath = std::getenv(EMPATH)) {
-                     if (fexists(std::string(glarepath) + "/" + script)) {
-                         script = std::string(glarepath) + "/" + script;
-                     }
-                     else {
+                 if (const char * aux = std::getenv(EMPATH)) {
+                     
+                     // Get the empath directories
+                     std::vector< std::string > emp_dirs = getEmpath();
+                     
+                     bool found = false;
+                     
+                     // Find the script in those directories
+                     for(auto p : emp_dirs){
+                         if (fexists(p + "/" + script)) {
+                             script = p + "/" + script;
+                             found = true;
+                         }
+                     }                     
+                     if(!found) {
                          FATAL(errorMessage, "Lua script '" + std::string(script) + "' not found (not even in "+ EMPATH +")");
                          return 1;
                      }
+                     
                  } else { // if there is no GLAREPATH variable, just error.
                      FATAL(errorMessage, "Lua script '" + std::string(script) + "' not found");
                      return 1;
@@ -101,15 +136,12 @@ int main(int argc, char* argv[]){
          /* CREATE A NEW LUA STATE */
          lua_State * L = luaL_newstate();
          luaL_openlibs(L);
-         
-         /* CREATE A TASK FACTORY DICTIONARY */
-         std::map<std::string, TaskFactory> taskDictionary;
-         
+                  
          /* INITIALIZE API */
-         initAPI(L,&model, &taskDictionary, &taskManager,argc,argv);
+         initAPI(L,&model, &taskManager,argc,argv);
          
          /* REGISTER COMMANDS */
-         registerGHMCommands(L);
+         registerCommands(L);
          
          /* LOAD THE MODEL */
          if(strcmp(argv[1],"-")==0){
@@ -142,12 +174,7 @@ int main(int argc, char* argv[]){
              FATAL(e,"Unrecognized model format");
              return 1;
          }
-         
-         /* REGISTER OTHER COMMANDS */
-         registerCommands(L);
-         
-         /* REGISTER TASKS */
-         registerTasks(L);
+                                    
          
          if(script != "-"){
              // Process LUA script
@@ -182,8 +209,11 @@ int main(int argc, char* argv[]){
                      WARN(x,"No tasks in TaskManager, so nothing to do... to avoid this message set 'auto_solve = false' in your script");
                      return 0;
                  }
+                 
                  taskManager.solve(&results);
-                 std::cout << results;
+                 
+                 //if(!results.empty())
+                     std::cout << results;
              }
          }
          

@@ -58,23 +58,6 @@ TaskManager * getCurrentTaskManager(lua_State * L)
 }
 
 
-std::map<std::string, TaskFactory> * getCurrentTaskDictionary(lua_State * L)
-{
-#ifdef _DEBUG
-    INIT_STACK_CHECK_STACK_SIZE
-#endif
-    
-  lua_getglobal(L, LUA_TASKDICTIONARY_VARIABLE);
-  std::map<std::string,TaskFactory> * taskDictionary = (std::map<std::string, TaskFactory> *)lua_touserdata(L, lua_gettop(L));
-  lua_pop(L, 1);
-
-#ifdef _DEBUG
-    CHECK_STACK_SIZE
-#endif
-    
-  return taskDictionary;
-}
-
 void checkNArguments(lua_State * L, int nRArgs)
 {
 	int nargs = lua_gettop(L);
@@ -393,7 +376,6 @@ std::vector<Point3D> getVectorOfPointsFromTableField(lua_State * L, int tableInd
     
     while(getPointFromTableIndex(L,&p,newTableIndex,++pCount)){
         res.push_back(p);
-        n = lua_gettop(L);
     }
     
     lua_pop(L,2);

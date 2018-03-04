@@ -24,15 +24,15 @@
 #include "./get_material.h"
 
 // Include otypes
-#include "../ghm_commands/otypes/bubble.h"
-#include "../ghm_commands/otypes/cone.h"
-#include "../ghm_commands/otypes/cup.h"
-#include "../ghm_commands/otypes/cylinder.h"
-#include "../ghm_commands/otypes/face.h"
-#include "../ghm_commands/otypes/ring.h"
-#include "../ghm_commands/otypes/source.h"
-#include "../ghm_commands/otypes/sphere.h"
-#include "../ghm_commands/otypes/tube.h"
+#include "../commands/model/otypes/bubble.h"
+#include "../commands/model/otypes/cone.h"
+#include "../commands/model/otypes/cup.h"
+#include "../commands/model/otypes/cylinder.h"
+#include "../commands/model/otypes/face.h"
+#include "../commands/model/otypes/ring.h"
+#include "../commands/model/otypes/source.h"
+#include "../commands/model/otypes/sphere.h"
+#include "../commands/model/otypes/tube.h"
 
 
 #define ADD_OBJECT(X) X * o = new X(&name); \

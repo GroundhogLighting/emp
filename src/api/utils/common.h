@@ -20,8 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef API_COMMON_H
 #define API_COMMON_H
 
-#include "../../taskfactory.h"
-//#include "../emp_core/include/emp_core.h"
+#include "emp_core.h"
 
 extern "C" {
 #include "lua.h"
@@ -60,13 +59,6 @@ GroundhogModel * getCurrentModel(lua_State * L);
 */
 TaskManager * getCurrentTaskManager(lua_State * L);
 
-//! Retrieves the current TaskManager exposed to the API
-/*!
-@author German Molina
-@param L The lua_State * object
-@return The pointer to the current Task Dictionary
-*/
-std::map<std::string, TaskFactory> * getCurrentTaskDictionary(lua_State * L);
 
 //! Checks that the number of arguments matches a certain value
 /*!

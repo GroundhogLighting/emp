@@ -24,15 +24,15 @@
 
 // Include materials
 
-#include "../ghm_commands/materials/dielectric.h"
-#include "../ghm_commands/materials/glass.h"
-#include "../ghm_commands/materials/glow.h"
-#include "../ghm_commands/materials/interface.h"
-#include "../ghm_commands/materials/light.h"
-#include "../ghm_commands/materials/metal.h"
-#include "../ghm_commands/materials/plastic.h"
-#include "../ghm_commands/materials/spotlight.h"
-#include "../ghm_commands/materials/trans.h"
+#include "../commands/model/materials/dielectric.h"
+#include "../commands/model/materials/glass.h"
+#include "../commands/model/materials/glow.h"
+#include "../commands/model/materials/interface.h"
+#include "../commands/model/materials/light.h"
+#include "../commands/model/materials/metal.h"
+#include "../commands/model/materials/plastic.h"
+#include "../commands/model/materials/spotlight.h"
+#include "../commands/model/materials/trans.h"
 
 
 #define ADD_MATERIAL(X) X * m = new X(&name); \

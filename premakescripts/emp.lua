@@ -3,9 +3,9 @@ project "emp"
     kind "ConsoleApp"
     language "C++"
     buildoptions { '-std=c++11' }
-
+    runpathdirs { "." }
     targetdir "../bin/%{cfg.buildcfg}"
-
+    buildoptions { "-v"}
     files { 
         "../main.cpp",
         "../src/**.h",
@@ -21,6 +21,7 @@ project "emp"
     includedirs{
         "../src/",
         third_party_dir,       
+        emp_core_dir.."/include",
         emp_core_dir.."/3rdparty/intelTBB/include",                
         lua_dir,  
         emp_core_dir.."/src/",

@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "./config_constants.h"
 
 #include "./api/utils/common.h"
-#include "../emp_core/include/emp_core.h"
+#include "emp_core.h"
 
 
 #include <utility>
@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
-void initAPI(lua_State * L, GroundhogModel * ghmodel, std::map<std::string, TaskFactory> * taskDictionary, TaskManager * taskManager, int argc, char* argv[]) {
+void initAPI(lua_State * L, GroundhogModel * ghmodel, TaskManager * taskManager, int argc, char* argv[]) {
 
 	// REGISTER THE GROUNDHOG MODEL
 	lua_pushlightuserdata(L, ghmodel);
@@ -43,10 +43,7 @@ void initAPI(lua_State * L, GroundhogModel * ghmodel, std::map<std::string, Task
 	lua_pushlightuserdata(L, taskManager);
 	lua_setglobal(L, LUA_TASKMANAGER_VARIABLE);
 
-    // REGISTER TASK DICTIONARY
-    lua_pushlightuserdata(L, taskDictionary);
-    lua_setglobal(L, LUA_TASKDICTIONARY_VARIABLE);
-
+    
 	// LOAD ARGUMENTS TABLE
 	lua_newtable(L);
 	int table_pos = lua_gettop(L);

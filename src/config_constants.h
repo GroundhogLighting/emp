@@ -22,7 +22,7 @@
 #define EMP_CONFIG_CONSTANTS_H
 
 #include "./versions.h"
-//#include "../emp_core/include/emp_core.h"
+//#include "emp_core.h"
 
 
 /// The 'usage' message
@@ -36,9 +36,6 @@
 
 /// Name of the global variable pointing to the TaskManager in the Lua API
 #define LUA_TASKMANAGER_VARIABLE "currenttaskmanager"
-
-/// Name of the global variable pointing to the TaskDictionary in the Lua API
-#define LUA_TASKDICTIONARY_VARIABLE "currenttaskdictionary"
 
 /// Name of the variable defining the TaskManager's autoSolve option
 #define LUA_AUTOSOLVE_VARIABLE "auto_solve"

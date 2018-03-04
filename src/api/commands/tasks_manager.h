@@ -44,14 +44,3 @@ int solveTaskManager(lua_State * L);
 @return 0
 */
 int printTaskManager(lua_State * L);
-
-//! Adds a task to the TaskManager
-/*!
-@author German Molina
-@param[in] L the lua_State object
-@return 0
-*/
-int addTask(lua_State * L);
-
-
-

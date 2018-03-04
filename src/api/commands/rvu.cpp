@@ -19,7 +19,7 @@
  *****************************************************************************/
 
 #include "./rvu.h"
-#include "../../emp_core/include/emp_core.h"
+#include "emp_core.h"
 #include "../utils/common.h"
 
 int review(lua_State * L)
