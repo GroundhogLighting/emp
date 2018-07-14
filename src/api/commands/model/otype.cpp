@@ -60,9 +60,9 @@ int getOtypeType(lua_State * L)
     // Retrieve the first argument
     std::string objectName = lua_tostring(L, 1);
     
-    Otype * o = getOtype(L,&objectName);
-    
-    lua_pushstring(L, o->getType()->c_str());
+    const Otype * o = getOtype(L,&objectName);
+    std::string type = o->getType();
+    lua_pushstring(L, &type[0]);
     
     return 1;
 }

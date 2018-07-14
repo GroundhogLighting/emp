@@ -25,6 +25,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "./tasks_manager.h"
 #include "../utils/common.h"
 
+#include "./tasks/df.h"
+#include "./tasks/lux.h"
+#include "./tasks/da.h"
+#include "./tasks/udi.h"
+#include "./tasks/ase.h"
 
 int solveTaskManager(lua_State * L)
 {
@@ -53,3 +58,53 @@ int printTaskManager(lua_State * L)
   return 0;
 }
 
+int cleanTaskManager(lua_State * L)
+{
+    getCurrentTaskManager(L)->clean();
+    
+    return 0;
+}
+
+
+int pushJSONMetric(lua_State * L)
+{
+    // Check number of arguments
+    checkNArguments(L, 1);
+    
+    // Check type
+    checkArgType(L, LUA_TTABLE, 1);
+    
+    // Get class field
+    std::string className = getStringFromTableField(L, 1, "class");
+    
+    // Do what should be done
+    if(className == "UDI" || className == "Useful Daylight Illuminance"){
+        return workplaneUDI(L);
+        
+    }else if(className == "DA" || className == "Daylight Autonomy"){
+        return workplaneDA(L);
+        
+    }else if(className == "Clear sky illuminance"){
+        return clearSkyWorkplaneIlluminance(L);
+        
+    }else if(className == "Intermediate sky illuminance"){
+        return intermediateSkyWorkplaneIlluminance(L);
+        
+    }else if(className == "Overcasts sky illuminance"){
+        return overcastSkyWorkplaneIlluminance(L);
+        
+    }else if(className == "Weather sky illuminance"){
+        return perezSkyWorkplaneIlluminance(L);
+        
+    }else if(className == "DF" || className == "Daylight Factor"){
+        return workplaneDF(L);
+        
+    }else if(className == "ASE" || className == "Annual Sunlight Exposure"){
+        return workplaneASE(L);
+        
+    }else {
+        std::string err = "Unknown metric class '"+className+"'";
+        usageError(L, err);
+    }
+    return 0;
+}

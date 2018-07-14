@@ -112,9 +112,25 @@ void argTypeError(lua_State * L, int expectedType, int argPoisition)
 }
 
 
+void executionError(lua_State * L, std::string err)
+{
+  executionError(L, err.c_str());
+}
+
 void executionError(lua_State * L, const char * err)
 {
-  sendError(L, "Execution error", err);
+    sendError(L, "Internal error", err);
+}
+
+
+void usageError(lua_State * L, std::string err)
+{
+    usageError(L, err.c_str());
+}
+
+void usageError(lua_State * L, const char * err)
+{
+    sendError(L, "Usage", err);
 }
 
 void sendError(lua_State * L, const char * kind, const char * err)
@@ -394,7 +410,7 @@ double getNumberFromTableField(lua_State * L, int tableIndex, const char * field
 #endif
     // stack top == tableIndex
     checkFieldType(L, tableIndex, fieldName, LUA_TNUMBER);
-    double ret = lua_tonumber(L,lua_gettop(L));
+    double ret = lua_tonumber(L,-1);
     lua_pop(L,1);
 #ifdef _DEBUG
     CHECK_STACK_SIZE
@@ -410,7 +426,7 @@ std::string getStringFromTableField(lua_State * L, int tableIndex, const char * 
     INIT_STACK_CHECK_STACK_SIZE
 #endif
     checkFieldType(L, tableIndex, fieldName, LUA_TSTRING);
-    std::string ret = std::string(lua_tostring(L,lua_gettop(L)));
+    std::string ret = std::string(lua_tostring(L,-1));
     lua_pop(L,1);
     
 #ifdef _DEBUG
@@ -418,8 +434,58 @@ std::string getStringFromTableField(lua_State * L, int tableIndex, const char * 
 #endif
     
     return ret;
-    
 }
+
+double getDoubleFromTableField(lua_State * L, int tableIndex, const char * fieldName)
+{
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    checkFieldType(L, tableIndex, fieldName, LUA_TNUMBER);
+    double ret = lua_tonumber(L,-1);
+    lua_pop(L,1);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
+    return ret;
+}
+
+
+int getIntFromTableField(lua_State * L, int tableIndex, const char * fieldName)
+{
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    checkFieldType(L, tableIndex, fieldName, LUA_TNUMBER);
+    int ret = static_cast<int>(lua_tonumber(L,-1));
+    lua_pop(L,1);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
+    return ret;
+}
+
+
+float getFloatFromTableField(lua_State * L, int tableIndex, const char * fieldName)
+{
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    checkFieldType(L, tableIndex, fieldName, LUA_TNUMBER);
+    float ret = static_cast<float>(lua_tonumber(L,-1));
+    lua_pop(L,1);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
+    return ret;
+}
+
 
 bool fieldExists(lua_State * L, int tableIndex, std::string fieldName)
 {
@@ -437,6 +503,25 @@ bool fieldExists(lua_State * L, int tableIndex, std::string fieldName)
 #endif
     
     return res;    
+}
+
+
+bool fieldExists(lua_State * L, int tableIndex, int fieldName)
+{
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    // stack top == tableIndex
+    int type = lua_geti(L,tableIndex,fieldName);
+    
+    bool res = (type != LUA_TNIL);
+    lua_pop(L,1);
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
+    return res;
 }
 
 void putVectorIntoTable(lua_State * L, int tableIndex, const char * fieldName, Vector3D v)
@@ -521,5 +606,199 @@ void getColorFromTableField(lua_State * L, int tableIndex, const char * fieldNam
 #ifdef _DEBUG
     CHECK_STACK_SIZE
 #endif
+}
+
+void tableToJsonArray(lua_State * L, int tablePosition, json * j)
+{
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    // Ensure type of value
+    checkArgType(L, LUA_TTABLE, tablePosition);
+    
+    // Ensure type of JSON
+    if(!j->is_array())
+        sendError(L, "Internal", "tableToJsonArray function requires an json::array");
+    
+    
+    // Fill
+    int field = 0;
+    while(fieldExists(L,tablePosition,++field)){
+        int vType = lua_geti(L,tablePosition,field); // Stack == tablePosition + 1
+        switch(vType){
+            case LUA_TNUMBER:
+                j->push_back(lua_tonumber(L,-1));
+                break;
+            case LUA_TSTRING:
+                j->push_back(std::string(lua_tostring(L,-1)));
+                break;
+            case LUA_TTABLE:
+            {
+                
+                if(fieldExists(L,-1,1)){
+                    // is array
+                    j->push_back(json::array());
+                    size_t size = j->size()-1;
+                    tableToJsonArray(L,-1, &(j->at(size)));
+                }else{
+                    // is object
+                    j->push_back(json::object());
+                    size_t size = j->size()-1;
+                    tableToJson(L,-1,&(j->at(size)));
+                }
+                
+                break;
+                
+            }
+            default:
+                std::string type = std::string(lua_typename(L, lua_type(L, -1)));
+                std::string err = "Value of type" + type + " in Table inputed to tableToJson function";
+                executionError(L,err);
+        }
+        
+        lua_pop(L,1);
+    }
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+}
+
+void tableToJson(lua_State * L, int tablePosition, json * j)
+{
+#ifdef _DEBUG
+    INIT_STACK_CHECK_STACK_SIZE
+#endif
+    // Ensure type of value
+    checkArgType(L, LUA_TTABLE, tablePosition);
+    
+    // Ensure type of JSON
+    if(!j->is_object())
+        executionError(L,"tableToJson function requires an json::object");
+    
+    
+    
+    // Iterate
+    lua_pushnil(L);  /* first key */
+    while (lua_next(L, tablePosition) != 0) {
+        /* uses 'key' (at index -2) and 'value' (at index -1) */
+        // Check key type
+        std::string key;
+        if (lua_isnumber(L, -2)){
+            key = std::to_string(lua_tonumber(L, -2));
+        } else if (lua_isstring(L, -2)){
+            key = std::string(lua_tostring(L,-2));
+        } else {
+            std::string type = std::string(lua_typename(L, lua_type(L, -2)));
+            std::string err = "Key of type" + type + " in Table inputed to tableToJson function";
+            executionError(L, err);
+        }
+        
+        // Check value type
+        switch(lua_type(L, -1)){
+            case LUA_TSTRING:
+                (*j)[key.c_str()]=lua_tostring(L, -1);
+                break;
+                
+            case LUA_TNUMBER:
+                (*j)[key.c_str()]=lua_tonumber(L, -1);
+                break;
+                
+            case LUA_TTABLE:
+            {
+                if(fieldExists(L,-1,1)){
+                    // is array
+                    (*j)[key.c_str()]=json::array();
+                    tableToJsonArray(L,-1,&(*j)[key.c_str()]);
+                }else{
+                    // is object
+                    (*j)[key.c_str()]=json::object();
+                    if(lua_rawlen(L,-1) != 0)
+                        tableToJson(L,-1,&(*j)[key.c_str()]);
+                }
+                
+                break;
+            }
+            default:
+                std::string type = std::string(lua_typename(L, lua_type(L, -1)));
+                std::string err = "Value of type" + type + " in Table inputed to tableToJson function";
+                executionError(L, err);
+                
+        }
+        
+        /* removes 'value'; keeps 'key' for next iteration */
+        lua_pop(L, 1);
+    }
+    
+#ifdef _DEBUG
+    CHECK_STACK_SIZE
+#endif
+    
+}
+
+void jsonToTable(lua_State * L, const json * j)
+{
+
+    // Create a table
+    lua_newtable(L); // stack = +1
+    
+    // Fill
+    if(j->is_array()){
+        size_t size = j->size();
+        for(size_t i = 0; i < size; i++){
+            const json * value = &(j->at(i));
+            if(value->is_number()){
+                lua_pushnumber(L, j->at(i));
+            }else if(value->is_object()){
+                jsonToTable(L,value);
+            }else if(value->is_array()){
+                jsonToTable(L,value);
+            }else if(value->is_string()){
+                std::string s = j->at(i);
+                lua_pushstring(L, s.c_str());
+            }else if(value->is_boolean()){
+                bool s = j->at(i);
+                lua_pushboolean(L, s);
+            }else {
+                executionError(L, "Unkown JSON type when building Lua Table");
+            }
+            lua_seti(L, -2, i+1);
+        }
+        
+    }else if(j->is_object()){
+        for (auto it = j->begin(); it != j->end(); ++it)
+        {
+            const json * value = &it.value();
+            std::string key = it.key();
+            
+            if(value->is_number()){
+                lua_pushnumber(L, *value);
+            }else if(value->is_object()){
+                jsonToTable(L,value);
+            }else if(value->is_array()){
+                jsonToTable(L,value);
+            }else if(value->is_string()){
+                std::string s = *value;
+                lua_pushstring(L, s.c_str());
+            }else if(value->is_boolean()){
+                bool s = value;
+                lua_pushboolean(L, s);
+            }else {
+                executionError(L, "Unkown JSON type when building Lua Table");
+            }
+            lua_setfield(L, -2, key.c_str());
+        }
+    }else if(j->is_null()){
+        executionError(L, "NULL JSON passed to jsonToTable");
+    }else if(j->is_number()){
+        executionError(L,"Number JSON passed to jsonToTable");
+    }else if(j->is_string()){
+        executionError(L,"String JSON passed to jsonToTable");
+    }else if(j->is_boolean()){
+        executionError(L,"Boolean JSON passed to jsonToTable");
+    }else{
+        executionError(L,"JSON of unkown type passed to jsonToTable");
+    }
+    
 }
 

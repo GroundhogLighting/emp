@@ -36,13 +36,64 @@ int getWorkplanesList(lua_State * L)
 	
 	// push workplane names
 	for (size_t i = 0; i < nwps; i++) {
-        std::string * name = model->getWorkplaneRef(i)->getName();
-		lua_pushstring(L, &name->at(0));
+        std::string name = model->getWorkplaneRef(i)->getName();
+		lua_pushstring(L, &name[0]);
 		lua_seti(L, 1, i+1); 
 	}
 
 	return 1;
 }
+
+
+int getWorkplanesData(lua_State * L)
+{
+    // Check nuber of arguments
+    checkNArguments(L, 0);
+    
+    GroundhogModel * model = getCurrentModel(L);
+    size_t nwps = model->getNumWorkplanes();
+    
+    // Create the table
+    lua_newtable(L); // stack = 1
+    
+    // push workplane names
+    for (size_t i = 0; i < nwps; i++) {
+        // Retrive workplane
+        const Workplane * wp = model->getWorkplaneRef(i);
+        
+        // Create a table that will contain this workplane
+        lua_newtable(L); // stack = 2
+        
+        // Push name
+        std::string name = wp->getName();
+        lua_pushstring(L, &name[0]);
+        lua_setfield(L, 2, "name");
+        
+        // Push maxArea
+        double maxArea = wp->getMaxArea();
+        lua_pushnumber(L, maxArea);
+        lua_setfield(L, 2, "pixel_size");
+
+        // Push tasks
+        const std::vector<std::string> * tasks = wp->getTasks();
+        size_t nTasks = tasks->size();
+        lua_newtable(L); // stack = 3
+        for(size_t j = 1; j <= nTasks; j++){
+            std::string task = tasks->at(j-1);
+            lua_pushstring(L, task.c_str());
+            lua_seti(L,3,j);
+        }
+        
+        lua_setfield(L, 2, "tasks");
+        
+        // Put the table in the array
+        lua_seti(L,1,i+1);
+        
+    }
+    
+    return 1;
+}
+
 
 int countWorkplanePolygons(lua_State * L)
 {
@@ -113,8 +164,8 @@ int createWorkplane(lua_State * L)
     size_t nExtPoints = extPoints.size();
     
     if(nExtPoints < 3){
-        std::string eMsg = "Exterior loop of a Workplane requires at least three vertices... only "+std::to_string(nExtPoints) + " were given";
-        sendError(L, "Usage", eMsg.c_str());
+        std::string eMsg = "Exterior loop of a Workplane requires at least three vertices... only "+std::to_string(nExtPoints) + " were given";        
+        usageError(L, eMsg);
     }
     
     for(size_t i = 0; i<nExtPoints; i++){
@@ -139,7 +190,7 @@ int createWorkplane(lua_State * L)
         size_t nPoints = points.size();
         if(nPoints < 3){
             std::string eMsg = "Holes in a Workplane require at least three vertices... only "+std::to_string(nPoints) + " were given";
-            sendError(L, "Usage", eMsg.c_str());
+            usageError(L, eMsg);
         }
         
         // Add them

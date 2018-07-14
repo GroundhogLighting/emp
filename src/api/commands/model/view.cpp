@@ -120,8 +120,8 @@ int createView(lua_State * L)
         }else if(strcmp(c_type,"stereographic")== 0 || strcmp(c_type,"s")== 0){
             view->viewType = STEREOGRAPHIC_VIEW;
         }else {
-            std::string errMsg = "Unknown view type '"+type+"'";
-            sendError(L, "Usage", errMsg.c_str());
+            std::string errMsg = "Unknown view type '"+type+"'";            
+            usageError(L, errMsg);
         }
     }
     if(fieldExists(L, 1, "fore_clipping")){

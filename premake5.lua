@@ -36,7 +36,6 @@ dofile(premakescripts_dir.."/lua.lua")
 dofile(premakescripts_dir.."/emp_core.lua")
 dofile(premakescripts_dir.."/emp.lua")
 dofile(premakescripts_dir.."/rtrad.lua")
-  
 
 --package.path = package.path .. ";"..premakescripts_dir.."/?.lua"
 --require("tbb")

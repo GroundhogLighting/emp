@@ -39,8 +39,8 @@ int getComponentDefinitionsList(lua_State * L)
     
     // push layer names
     for (size_t i = 0; i < nwps; i++) {
-        std::string * name = model->getComponentDefinitionRef(i)->getName();
-        lua_pushstring(L, &name->at(0));
+        std::string name = model->getComponentDefinitionRef(i)->getName();
+        lua_pushstring(L, &name[0]);
         lua_seti(L, 1, i+1);
     }
     
@@ -61,7 +61,7 @@ int countComponentDefinitionObjects(lua_State * L)
     // Check if workplane exists
     ComponentDefinition * cd = getComponentDefinition(L,&layerName);
     
-    std::vector<Otype *> * objects = cd->getObjectsRef();
+    const std::vector<Otype *> * objects = cd->getObjectsRef();
     
     lua_pushnumber(L,objects->size());
     
@@ -82,7 +82,7 @@ int countComponentDefinitionInstances(lua_State * L)
     // Check if workplane exists
     ComponentDefinition * cd = getComponentDefinition(L,&layerName);
     
-    std::vector<ComponentInstance *> * instances = cd->getComponentInstancesRef();
+    const std::vector<ComponentInstance *> * instances = cd->getComponentInstancesRef();
     
     lua_pushnumber(L,instances->size());
     

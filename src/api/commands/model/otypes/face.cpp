@@ -36,7 +36,8 @@ void fillData(Face * o, lua_State * L, int tableIndex)
     
     if(nExtPoints < 3){
         std::string eMsg = "Exterior loop of a polygon requires at least three vertices... only "+std::to_string(nExtPoints) + " were given";
-        sendError(L, "Usage", eMsg.c_str());
+        
+        usageError(L, eMsg);
     }
     
     for(size_t i = 0; i<nExtPoints; i++){
@@ -61,7 +62,7 @@ void fillData(Face * o, lua_State * L, int tableIndex)
         size_t nPoints = points.size();
         if(nPoints < 3){
             std::string eMsg = "Holes in a polygon require at least three vertices... only "+std::to_string(nPoints) + " were given";
-            sendError(L, "Usage", eMsg.c_str());
+            usageError(L, eMsg);
         }
         
         // Add them

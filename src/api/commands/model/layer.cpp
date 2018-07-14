@@ -39,8 +39,8 @@ int getLayersList(lua_State * L)
     
     // push layer names
     for (size_t i = 0; i < nwps; i++) {
-        std::string * name = model->getLayerRef(i)->getName();
-        lua_pushstring(L, &name->at(0));
+        std::string name = model->getLayerRef(i)->getName();
+        lua_pushstring(L, &name[0]);
         lua_seti(L, 1, i+1);
     }
     
@@ -61,7 +61,7 @@ int countLayerObjects(lua_State * L)
     // Check if workplane exists
     Layer * layer = getLayer(L,&layerName);
     
-    std::vector<Otype *> * objects = layer->getObjectsRef();
+    const std::vector<Otype *> * objects = layer->getObjectsRef();
     
     lua_pushnumber(L,objects->size());
     
@@ -82,7 +82,7 @@ int countLayerInstances(lua_State * L)
     // Check if workplane exists
     Layer * layer = getLayer(L,&layerName);
     
-    std::vector<ComponentInstance *> * instances = layer->getComponentInstancesRef();
+    const std::vector<ComponentInstance *> * instances = layer->getComponentInstancesRef();
     
     lua_pushnumber(L,instances->size());
     

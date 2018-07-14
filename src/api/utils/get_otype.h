@@ -37,4 +37,4 @@ extern "C" {
  @param[in] objectName The name of the Otype
  @return The Otype
  */
-Otype * getOtype(lua_State * L, std::string * objectName);
+const Otype * const getOtype(lua_State * L, std::string * objectName);

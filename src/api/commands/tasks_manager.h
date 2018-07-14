@@ -44,3 +44,21 @@ int solveTaskManager(lua_State * L);
 @return 0
 */
 int printTaskManager(lua_State * L);
+
+//! Removes the tasks from the current taskmanager
+/*!
+ @author German Molina
+ @param[in] L the lua_State object
+ @return 0
+ */
+int cleanTaskManager(lua_State * L);
+
+
+//! Adds a task in the generic JSON form
+/*!
+ @author German Molina
+ @param[in] L the lua_State object
+ @return 0
+ */
+int pushJSONMetric(lua_State * L);
+

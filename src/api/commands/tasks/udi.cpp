@@ -1,3 +1,4 @@
+
 /*****************************************************************************
  Emp
  
@@ -18,13 +19,28 @@
  
  *****************************************************************************/
 
-#pragma once
 
-#include "emp_core.h"
+#include "./common.h"
 
-extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
+
+int workplaneUDI(lua_State * L)
+{
+    ENSURE_MINIMUM_WORKPLANE_METRIC_DATA
+    ENSURE_WEATHER
+    
+    double minLux = getDoubleFromTableField(L,1,MIN_LUX_FIELD);
+    double maxLux = getDoubleFromTableField(L,1,MAX_LUX_FIELD);
+    double early = getDoubleFromTableField(L,1,EARLY_FIELD);
+    double late = getDoubleFromTableField(L,1,LATE_FIELD);
+    int firstMonth = getIntFromTableField(L,1,FIRST_MONTH_FIELD);
+    int lastMonth = getIntFromTableField(L,1,LAST_MONTH_FIELD);
+    float minTime  = getFloatFromTableField(L,1,MIN_TIME_FIELD);
+    
+    CheckUDICompliance * t = new CheckUDICompliance(name,model,rtraceOptions,wp,6,1,minLux,maxLux,early,late,firstMonth,lastMonth,minTime);
+    t->reportResults = true;
+    
+    // Get task manager
+    tm->addTask(t);
+    
+    return 0;
 }
-

@@ -38,7 +38,8 @@
 #define ADD_OBJECT(X) X * o = new X(&name); \
 fillData(o,L,1); \
 layer->addObject(o); \
-lua_pushstring(L,o->getType()->c_str()); \
+std::string type = o->getType(); \
+lua_pushstring(L,&type[0]); \
 if(material != nullptr) \
 o->setMaterial(material)
                
@@ -97,7 +98,8 @@ int createOtype(lua_State * L, const char * type)
     lua_setfield(L,1,"class");
     
     // Add the layer to the original table
-    lua_pushstring(L,layer->getName()->c_str());
+    std::string layerName = layer->getName();
+    lua_pushstring(L,&layerName[0]);
     lua_setfield(L,1,"layer");
     
     // Add the name to the original table

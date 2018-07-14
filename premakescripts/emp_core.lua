@@ -36,15 +36,19 @@ project "emp_core"
         defines { "MACOS" }            
         runpathdirs { "libs" }
         --includedirs
+        buildoptions {
+            "-F /Library/Frameworks",
+            "-v",          
+        }
+        links {
+            "SketchUpAPI.framework",
+        }
         linkoptions {            
             "-L "..emp_core_dir.."/libs/%{cfg.buildcfg}/tbb"
         }    
-        buildoptions {
-            "-F "..emp_core_dir.."/3rdparty/SketchUp/MACOS/headers",            
-        }
-        links {
-            emp_core_dir.."/3rdparty/SketchUp/MACOS/headers/SketchUpAPI.framework",
-        }
+        --buildoptions {
+        --    "-F "..emp_core_dir.."/3rdparty/SketchUp/MACOS/headers",            
+        --}
         
     elseif is_linux then
         defines { "LINUX", "AVOID_SKP" }    

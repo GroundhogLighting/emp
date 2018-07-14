@@ -38,7 +38,8 @@
 #define ADD_MATERIAL(X) X * m = new X(&name); \
 fillData(m,L,1); \
 model->addMaterial(m); \
-lua_pushstring(L,m->getType()->c_str()); \
+std::string type = m->getType(); \
+lua_pushstring(L,&type[0]); \
 
 
 int createMaterial(lua_State * L, const char * type)

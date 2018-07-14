@@ -45,3 +45,12 @@ int raise(lua_State * L);
 @return the number of return values within the script
 */
 int warn(lua_State * L);
+
+//! Prints a value in the screen
+/*
+ @param[in] L The Lua state
+ @return the number of return values within the script
+ */
+int printValue(lua_State * L);
+
+

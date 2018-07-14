@@ -33,8 +33,11 @@ extern "C" {
 
 // Tasks
 #include "./commands/tasks/to_radiance.h"
-#include "./commands/tasks/static_calculation.h"
-
+#include "./commands/tasks/df.h"
+#include "./commands/tasks/lux.h"
+#include "./commands/tasks/udi.h"
+#include "./commands/tasks/ase.h"
+#include "./commands/tasks/da.h"
 
 // Basic IO
 #include "./commands/io/api_io.h"
@@ -50,6 +53,7 @@ extern "C" {
 #include "./commands/model/rtraceoptions.h"
 #include "./commands/model/view.h"
 #include "./commands/model/workplane.h"
+#include "./commands/model/tasks.h"
 
 
 // Otype
@@ -78,6 +82,7 @@ extern "C" {
 #include "./commands/model/generators/genbox.h"
 
 
+
 //! Registers all the available commands in the API
 /*!
 @author German Molina
@@ -93,7 +98,7 @@ void registerCommands(lua_State * L)
     
     /* @APIfunction
      
-     Solves the task manager
+     Calls RVU program
      */
     lua_register(L, "review", review);
 
@@ -115,9 +120,9 @@ void registerCommands(lua_State * L)
 
     /* @APIfunction
 
-    Removes current tasks from Task Manager
+    Removes all tasks from the Task Manager
     */
-    lua_register(L, "purge_tasks", solveTaskManager);
+    lua_register(L, "purge_tasks", cleanTaskManager);
 
     
     /* ======================== */
@@ -141,6 +146,15 @@ void registerCommands(lua_State * L)
      */
     lua_register(L, "warn", warn);
     
+    /* @APIfunction
+     
+     Prints a certain value to the standard output
+     
+     @param[required] value The value to print
+     */
+    lua_register(L, "inspect", printValue);
+    
+    
     /* ============================== */
     /* @APIgroup GROUNDHOG MODEL DATA */
     /* ============================== */
@@ -152,6 +166,15 @@ void registerCommands(lua_State * L)
      @return workplane_array An array with the workplanes names
      */
     lua_register(L, "get_workplanes_list", getWorkplanesList);
+    
+    /* @APIfunction
+     
+     Retrieves a table with the workplane information in the model.
+     That is, name, maximum size of pixel (triangulation), tasks, etc.
+     
+     @return workplane_array An array with the workplanes names
+     */
+    lua_register(L, "get_workplanes_data", getWorkplanesData);
     
     /* @APIfunction
      
@@ -180,6 +203,22 @@ void registerCommands(lua_State * L)
      */
     lua_register(L, "workplane",createWorkplane);
     
+    /* @APIfunction
+     
+     Retrieves an array with the metrics
+     
+     @return The metrics
+     */
+    lua_register(L, "get_metrics",getTasks);
+    
+    /* @APIfunction
+     
+     Retrieves a single metric
+     
+     @param The name of the metric to retrieve
+     @return The metrics
+     */
+    lua_register(L, "get_metric",getTask);
     
     /* @APIfunction
      
@@ -567,8 +606,6 @@ void registerCommands(lua_State * L)
     @param[required] task_name The name of the task to add
     @param[required] options The options given
     */
-    //lua_register(L, "task", addTask);
-
     lua_register(L,"write_scene_file", writeRadSceneFile);
 
     /* @APIfunction
@@ -578,8 +615,6 @@ void registerCommands(lua_State * L)
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
-    
     lua_register(L,"write_model_info", writeRadModelInfo);
     
     /* @APIfunction
@@ -589,8 +624,6 @@ void registerCommands(lua_State * L)
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
-    
     lua_register(L,"write_rif_file", writeRadRifFile);
 
     /* @APIfunction
@@ -688,25 +721,66 @@ void registerCommands(lua_State * L)
     
     /* @APIfunction
      
-     Adds a task to the task manager
+     Pushes a Calculate Workplane Illuminance task to the
+     task manager
      
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
-    
     lua_register(L,"workplane_illuminance", workplaneIlluminance);
     
     /* @APIfunction
      
-     Adds a task to the task manager
+     Pushes a Calculate Workplane Daylight Factor task to the
+     task manager
      
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
+    lua_register(L,"workplane_df", workplaneDF);
     
-    lua_register(L,"daylight_factor", daylightFactor);
+    /* @APIfunction
+     
+     Pushes a Calculate Workplane Useful Daylight Illuminance task to the
+     task manager
+     
+     @param[required] task_name The name of the task to add
+     @param[required] options The options given
+     */
+    lua_register(L,"workplane_udi", workplaneUDI);
+    
+    /* @APIfunction
+     
+     Pushes a Calculate Workplane Daylight Autonomy task to the
+     task manager
+     
+     @param[required] task_name The name of the task to add
+     @param[required] options The options given
+     */
+    lua_register(L,"workplane_da", workplaneDA);
+    
+    /* @APIfunction
+     
+     Pushes a Calculate Workplane Annual Sunlight Exposure task to the
+     task manager
+     
+     @param[required] task_name The name of the task to add
+     @param[required] options The options given
+     */
+    lua_register(L,"workplane_ase", workplaneASE);
+    
+    /* @APIfunction
+     
+     Pushes a generic Workplane metric to the Task Manager. This is an
+     alternative method to workplane_ase, workplane_da, etc.
+     
+     @param[required] task_name The name of the task to add
+     @param[required] options The options given
+     */
+    lua_register(L,"push_metric", pushJSONMetric);
+    
+    
+    
     
     
     

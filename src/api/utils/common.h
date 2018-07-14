@@ -145,13 +145,39 @@ void checkArgType(lua_State * L, int expectedType, int argPoisition);
 */
 void argTypeError(lua_State * L, int expectedType, int argPoisition);
 
-//! Sends an error that sais that some internal glare process failed
+//! Sends an error that sais that some internal emp process failed
 /*!
 @author German Molina
 @param[in] L The lua state
 @param[in] msg The error message
 */
+void executionError(lua_State * L, std::string err);
+
+//! Sends an error that sais that some internal emp process failed
+/*!
+ @author German Molina
+ @param[in] L The lua state
+ @param[in] msg The error message
+ */
 void executionError(lua_State * L, const char * err);
+
+
+//! Sends an error that sais that the user did something wrong
+/*!
+ @author German Molina
+ @param[in] L The lua state
+ @param[in] msg The error message
+ */
+void usageError(lua_State * L, std::string err);
+
+//! Sends an error that sais that the user did something wrong
+/*!
+ @author German Molina
+ @param[in] L The lua state
+ @param[in] msg The error message
+ */
+void usageError(lua_State * L, const char * err);
+
 
 //! Throws a Lua error
 /*!
@@ -296,16 +322,67 @@ double getNumberFromTableField(lua_State * L, int tableIndex, const char * field
  */
 std::string getStringFromTableField(lua_State * L, int tableIndex, const char * fieldName);
 
+//! Retrieves a double stored in a certain field in a Lua table
+/*!
+ Throws an error if something is wrong
+ 
+ @author German Molina
+ @param[in] L The lua_State
+ @param[in] tableIndex The location of the table in the stack
+ @param[in] fieldName The name of the field where the Vector3D is located
+ @return the string
+ */
+double getDoubleFromTableField(lua_State * L, int tableIndex, const char * fieldName);
+
+
+//! Retrieves a Int stored in a certain field in a Lua table
+/*!
+ Throws an error if something is wrong
+ 
+ @author German Molina
+ @param[in] L The lua_State
+ @param[in] tableIndex The location of the table in the stack
+ @param[in] fieldName The name of the field where the Vector3D is located
+ @return the string
+ */
+int getIntFromTableField(lua_State * L, int tableIndex, const char * fieldName);
+
+
+//! Retrieves a float stored in a certain field in a Lua table
+/*!
+ Throws an error if something is wrong
+ 
+ @author German Molina
+ @param[in] L The lua_State
+ @param[in] tableIndex The location of the table in the stack
+ @param[in] fieldName The name of the field where the Vector3D is located
+ @return the string
+ */
+float getFloatFromTableField(lua_State * L, int tableIndex, const char * fieldName);
+
+
 //! Checks if a certain field has something or not in a  table
 /*!
  
  @author German Molina
  @param[in] L The lua_State
  @param[in] tableIndex The location of the table in the stack
- @param[in] fieldName The name of the field where the Vector3D is located
+ @param[in] fieldName The name of the field to check
  @return exists?
  */
 bool fieldExists(lua_State * L, int tableIndex, std::string fieldName);
+
+
+//! Checks if a certain field has something or not in a  table
+/*!
+ 
+ @author German Molina
+ @param[in] L The lua_State
+ @param[in] tableIndex The location of the table in the stack
+ @param[in] fieldName The index of the field to check
+ @return exists?
+ */
+bool fieldExists(lua_State * L, int tableIndex, int fieldName);
 
 //! Checks if a certain field in a table matches a certain type
 /*!
@@ -367,5 +444,15 @@ bool checkFieldType(lua_State * L, int tableIndex, int i, int type, bool strict)
  @note THIS METHOD PUSHES THE FIELD INTO THE STACK.
  */
 bool checkFieldType(lua_State * L, int tableIndex, int i, int type);
+
+//! Builds a new JSON from a Lua table
+/*!
+ @author German Molina
+ */
+void tableToJson(lua_State * L, int tablePosition, json * j);
+
+void tableToJsonArray(lua_State * L, int tablePosition, json * j);
+
+void jsonToTable(lua_State * L, const json * j);
 
 #endif

@@ -38,8 +38,8 @@ int getMaterialsList(lua_State * L)
     // push material names
     for (size_t i = 0; i < nmaterials; i++) {
         Material * m = model->getMaterialRef(i);
-        std::string * name = m->getName();
-        lua_pushstring(L, name->c_str());
+        std::string name = m->getName();
+        lua_pushstring(L, &name[0]);
         lua_seti(L, 1, i+1);
     }
     
@@ -81,8 +81,8 @@ int getMaterialType(lua_State * L)
     std::string materialName = lua_tostring(L, 1);
     
     Material * m = getMaterial(L,&materialName);
-    
-    lua_pushstring(L, m->getType()->c_str());
+    std::string type = m->getType();
+    lua_pushstring(L, &type[0]);
     
     return 1;
 }

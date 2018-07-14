@@ -7,3 +7,6 @@
 [submodule "emp_core"]
 	path = emp_core
 	url = https://github.com/GroundhogLighting/emp_core.git
+[submodule "googletest"]
+	path = googletest
+	url = https://github.com/google/googletest.git

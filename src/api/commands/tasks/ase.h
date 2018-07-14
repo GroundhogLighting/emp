@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include "emp_core.h"
-
 extern "C" {
 #include "lua.h"
 #include "lualib.h"
@@ -29,22 +27,15 @@ extern "C" {
 }
 
 
-//! Register a WorkplaneIlluminance tasl
+//! Register a WorkplaneASE task
 /*!
-Allows calculating the luminance or illuminance of a scene by using a certain sky
-
-@author German Molina
-@param[in] L The lua_State * object
-@return Number of returned values to the lua script
-*/
-int workplaneIlluminance(lua_State * L);
-
-//! Register an Daylight Factor task
-/*!
- Allows calculating the luminance or illuminance of a scene by using a certain sky
  
  @author German Molina
  @param[in] L The lua_State * object
  @return Number of returned values to the lua script
  */
-int daylightFactor(lua_State * L);
+int workplaneASE(lua_State * L);
+
+
+
+

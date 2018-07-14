@@ -29,7 +29,7 @@ int writeRadSceneFile(lua_State * L)
     checkNArguments(L, 1);
     
     // Check the type of argument
-    checkArgType(L, LUA_TSTRING, 1);
+    checkArgType(L, LUA_TTABLE, 1);
     
     // Build options
     OptionSet options = OptionSet();
@@ -59,7 +59,7 @@ int writeRadRifFile(lua_State * L)
     checkNArguments(L, 1);
     
     // Check the type of argument
-    checkArgType(L, LUA_TSTRING, 1);
+    checkArgType(L, LUA_TTABLE, 1);
     
     // Build options
     OptionSet options = OptionSet();
@@ -97,7 +97,7 @@ int writeRadModelInfo(lua_State * L)
     checkNArguments(L, 1);
     
     // Check the type of argument
-    checkArgType(L, LUA_TSTRING, 1);
+    checkArgType(L, LUA_TTABLE, 1);
     
     // Build options
     OptionSet options = OptionSet();
@@ -126,7 +126,7 @@ int writeRadComponentDefinitions(lua_State * L)
     checkNArguments(L, 1);
     
     // Check the type of argument
-    checkArgType(L, LUA_TSTRING, 1);
+    checkArgType(L, LUA_TTABLE, 1);
     
     // Build options
     OptionSet options = OptionSet();
@@ -155,7 +155,7 @@ int writeRadViews(lua_State * L)
     checkNArguments(L, 1);
     
     // Check the type of argument
-    checkArgType(L, LUA_TSTRING, 1);
+    checkArgType(L, LUA_TTABLE, 1);
     
     // Build options
     OptionSet options = OptionSet();
@@ -184,7 +184,7 @@ int writeRadCurrentSky(lua_State * L)
     checkNArguments(L, 1);
     
     // Check the type of argument
-    checkArgType(L, LUA_TSTRING, 1);
+    checkArgType(L, LUA_TTABLE, 1);
     
     // Build options
     OptionSet options = OptionSet();
@@ -214,7 +214,7 @@ int writeRadCurrentWeather(lua_State * L)
     checkNArguments(L, 1);
     
     // Check the type of argument
-    checkArgType(L, LUA_TSTRING, 1);
+    checkArgType(L, LUA_TTABLE, 1);
     
     // Build options
     OptionSet options = OptionSet();
@@ -243,7 +243,7 @@ int writeRadMaterials(lua_State * L)
     checkNArguments(L, 1);
     
     // Check the type of argument
-    checkArgType(L, LUA_TSTRING, 1);
+    checkArgType(L, LUA_TTABLE, 1);
     
     // Build options
     OptionSet options = OptionSet();
@@ -273,7 +273,7 @@ int writeRadLayers(lua_State * L)
     checkNArguments(L, 1);
     
     // Check the type of argument
-    checkArgType(L, LUA_TSTRING, 1);
+    checkArgType(L, LUA_TTABLE, 1);
     
     // Build options
     OptionSet options = OptionSet();
@@ -302,7 +302,7 @@ int writeRadPhotosensors(lua_State * L)
     checkNArguments(L, 1);
     
     // Check the type of argument
-    checkArgType(L, LUA_TSTRING, 1);
+    checkArgType(L, LUA_TTABLE, 1);
     
     // Build options
     OptionSet options = OptionSet();
@@ -330,7 +330,7 @@ int writeRadWorkplane(lua_State * L)
     checkNArguments(L, 1);
     
     // Check the type of argument
-    checkArgType(L, LUA_TSTRING, 1);
+    checkArgType(L, LUA_TTABLE, 1);
     
     // Build options
     OptionSet options = OptionSet();
@@ -348,7 +348,7 @@ int writeRadWorkplane(lua_State * L)
     std::string name = options.getOption<std::string>("filename");
     
     if(name == "none")
-        name = *(wp->getName());
+        name = wp->getName();
     
     std::string aux = options.getOption<std::string>("directory") + "/" +name;
     

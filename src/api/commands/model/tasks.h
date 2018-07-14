@@ -18,24 +18,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 *****************************************************************************/
 
-#include "emp_core.h"
-#include "./get_otype.h"
-#include "./common.h"
+#pragma once
 
-const Otype * const getOtype(lua_State * L, std::string * objectName)
-{
-#ifdef _DEBUG
-    INIT_STACK_CHECK_STACK_SIZE
-#endif
-    GroundhogModel * model = getCurrentModel(L);
-    const Otype * object = model->getOtypeByName(objectName);
-    
-    if (object == nullptr) {
-        std::string errmsg = "Object '" + *objectName + "' does not exist";
-        sendError(L, "No Object", &errmsg[0]);
-    }
-#ifdef _DEBUG
-    CHECK_STACK_SIZE
-#endif
-    return object;
+#include "emp_core.h"
+
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 }
+
+//! Retrieves an array with all the tasks in the model
+/*!
+ @author German Molina
+ @param[in] L The lua state
+ @return the number of return values within the script
+ */
+int getTasks(lua_State * L);
+
+//! Retrieves a JSON object representing a single task in the model
+/*!
+ @author German Molina
+ @param[in] L The lua state
+ @return the number of return values within the script
+ */
+int getTask(lua_State * L);

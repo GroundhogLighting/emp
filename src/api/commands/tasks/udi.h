@@ -18,9 +18,22 @@
  
  *****************************************************************************/
 
-#include "./dynamic_calculation.h"
-#include "../../utils/common.h"
-#include "../../utils/optionset_ext.h"
+#pragma once
 
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+
+
+//! Register a WorkplaneUDI task
+/*!
+ 
+ @author German Molina
+ @param[in] L The lua_State * object
+ @return Number of returned values to the lua script
+ */
+int workplaneUDI(lua_State * L);
 
 

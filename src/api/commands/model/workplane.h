@@ -38,6 +38,14 @@ extern "C" {
 */
 int getWorkplanesList(lua_State * L);
 
+//! Retrieves a table of the Workplane objects in the GroundhogModel
+/*!
+ @author German Molina
+ @param[in] L The lua_State of the api
+ @return the number of return values within the script
+ */
+int getWorkplanesData(lua_State * L);
+
 //! Returns the number of polygons in a workplane
 /*!
  @author German Molina

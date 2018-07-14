@@ -10,6 +10,7 @@ extern "C" {
 #include "lauxlib.h"
 }
 
+
 #include "./src/api/load_commands.h"
 
 #include "./api.h"
@@ -77,55 +78,53 @@ int main(int argc, char* argv[]){
     
      // Not just wanting for help... do something.
      else if (argc < 3) {
-         FATAL(errmsg, "Incorrect emp usage\n");
-         std::cout << USAGE << std::endl;
+         std::cerr << "Incorrect emp usage\n" << std::endl;
+         std::cerr << USAGE << std::endl;
      }else{
          
          /* SEARCH FOR SCRIPT */
          std::string script = argv[2];
-         if(script != "-"){
-             // Search for the script...
+         
+         // add the .lua if needed
+         if (!stringInclude(script, ".lua")) {
+             script = script + ".lua";
+         }
+         
+         // check if script exists
+         if (!fexists(script)) {
              
-             // add the .lua if needed
-             if (!stringInclude(script, ".lua")) {
-                 script = script + ".lua";
-             }
-             
-             // check if script exists
-             if (!fexists(script)) {
+             // if it does not exist, we look into the EMPATH
+             if (const char * aux = std::getenv(EMPATH)) {
                  
-                 // if it does not exist, we look into the EMPATH
-                 if (const char * aux = std::getenv(EMPATH)) {
-                     
-                     // Get the empath directories
-                     std::vector< std::string > emp_dirs = getEmpath();
-                     
-                     bool found = false;
-                     
-                     // Find the script in those directories
-                     for(auto p : emp_dirs){
-                         if (fexists(p + "/" + script)) {
-                             script = p + "/" + script;
-                             found = true;
-                         }
-                     }                     
-                     if(!found) {
-                         FATAL(errorMessage, "Lua script '" + std::string(script) + "' not found (not even in "+ EMPATH +")");
-                         return 1;
+                 // Get the empath directories
+                 std::vector< std::string > emp_dirs = getEmpath();
+                 
+                 bool found = false;
+                 
+                 // Find the script in those directories
+                 for(auto p : emp_dirs){
+                     if (fexists(p + "/" + script)) {
+                         script = p + "/" + script;
+                         found = true;
                      }
-                     
-                 } else { // if there is no GLAREPATH variable, just error.
-                     FATAL(errorMessage, "Lua script '" + std::string(script) + "' not found");
+                 }
+                 if(!found) {
+                     std::cerr << "Lua script '" + std::string(script) + "' not found (not even in EMPATH)" << std::endl;
                      return 1;
                  }
+                 
+             } else { // if there is no EMPATH variable, just error.
+                 std::cerr << "Lua script '" + std::string(script) + "' not found" << std::endl;
+                 return 1;
              }
-             
-         }// else (i.e. script == "-"), we just want to load the model
+         }
+         
+         
          
          
          /* SEARCH FOR MODEL */
          if (!fexists(argv[1]) && strcmp(argv[1],"-") != 0 ) {
-             FATAL(errorMessage,"File '" + std::string(argv[1]) + "' not found");
+             std::cerr << "File '" + std::string(argv[1]) + "' not found" << std::endl;
              return 1;
          }
          
@@ -145,8 +144,9 @@ int main(int argc, char* argv[]){
          
          /* LOAD THE MODEL */
          if(strcmp(argv[1],"-")==0){
+             // No model to input... just script
              
-         } else if(stringInclude(argv[1],".ghm") || stringInclude(argv[1],".lua")){
+         } else if(stringInclude(argv[1],".lua")){
              /* GroundhogModels are actually Lua scripts */
              // Load script
              int s,r;
@@ -171,54 +171,66 @@ int main(int argc, char* argv[]){
              SKPreader reader = SKPreader(&model,false); // not verbose
              reader.parseSKPModel(argv[1]);
          }else {
-             FATAL(e,"Unrecognized model format");
+             std::cerr << "Unrecognized model format" << std::endl;
              return 1;
          }
                                     
          
-         if(script != "-"){
-             // Process LUA script
-             int status, result;
-             
-             // Load script
-             status = luaL_loadfile(L, &script[0]);
-             if (status) {
-                 std::cerr <<  lua_tostring(L, -1) << std::endl;
-                 return 1;
-             }
-             
-             // Solve script
-             result = lua_pcall(L, 0, LUA_MULTRET, 0);
-             if (result) {
-                 std::cerr << lua_tostring(L, -1) << std::endl;
-                 return 1;
-             }
-             
-             // Autosolve?
-             bool autoSolve = true; // defaults to true
-             lua_getglobal(L, LUA_AUTOSOLVE_VARIABLE);
-             // Check type
-             if (lua_type(L, 1) == LUA_TBOOLEAN) {
-                 autoSolve = lua_toboolean(L, 1);
-             }
-             
-             // solve if required
-             if (autoSolve) {
-                 nlohmann::json results = nlohmann::json();
-                 if(taskManager.countTasks() == 0){
-                     WARN(x,"No tasks in TaskManager, so nothing to do... to avoid this message set 'auto_solve = false' in your script");
-                     return 0;
-                 }
-                 
-                 taskManager.solve(&results);
-                 
-                 //if(!results.empty())
-                     std::cout << results;
-             }
+         
+         // Process LUA script
+         int status, result;
+         
+         // Load script
+         status = luaL_loadfile(L, &script[0]);
+         if (status) {
+             std::cerr <<  lua_tostring(L, -1) << std::endl;
+             return 1;
          }
          
+         // Solve script
+         result = lua_pcall(L, 0, LUA_MULTRET, 0);
+         if (result) {
+             std::cerr << lua_tostring(L, -1) << std::endl;
+             return 1;
+         }
          
+         // Autosolve?
+         bool autoSolve = true; // defaults to true
+         lua_getglobal(L, LUA_AUTOSOLVE_VARIABLE);
+         // Check type
+         if (lua_type(L, 1) == LUA_TBOOLEAN) {
+             autoSolve = lua_toboolean(L, 1);
+         }
+         lua_pop(L, 1); // Clean this variable
+         
+         
+         // solve if required
+         if (autoSolve) {
+             nlohmann::json results = nlohmann::json();
+             if(taskManager.countTasks() == 0){
+                 WARN(x,"No tasks in TaskManager, so nothing to do... to avoid this message set 'auto_solve = false' in your script");
+                 return 0;
+             }
+             
+             taskManager.solve(&results);
+             
+             // print results?
+             bool stdoutResults = true; // defaults to true
+             lua_getglobal(L, LUA_STDOUT_RESULTS_VARIABLE);
+             
+             // Check type
+             if (lua_type(L, 1) == LUA_TBOOLEAN) {
+                 stdoutResults = lua_toboolean(L, 1);
+             }
+             lua_pop(L,1); // Clean stack
+             if(!results.empty() && stdoutResults){
+                 std::cout << results << std::endl;
+             }
+         }
      }
+    
+    
+    
     
     return 0;
 }
