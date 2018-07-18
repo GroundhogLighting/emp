@@ -4,7 +4,7 @@ project "emp"
     language "C++"
     buildoptions { '-std=c++11' }
     runpathdirs { "." }
-    targetdir "../bin/%{cfg.buildcfg}"
+    targetdir "../dist/%{cfg.buildcfg}/bin"
     buildoptions { "-v"}
     files { 
         "../main.cpp",
@@ -66,21 +66,14 @@ project "emp"
     end
 
 
-    filter "configurations:Release"    
+    filter "configurations:RELEASE"    
     links {
-        "tbb"
+        "tbb","tbbmalloc","tbbmalloc_proxy"
     }
 
-    filter "configurations:Debug"
-    files {
-        --third_party_dir.."/nvwa/nvwa/debug_new.cpp", 
-    }
-    includedirs{
-        --third_party_dir.."/nvwa/nvwa",   
-        --google_test_dir.."/include",    
-    }
+    filter "configurations:DEBUG"    
     links {
-        "tbb_debug"
+        "tbb_debug","tbbmalloc_debug","tbbmalloc_proxy_debug"
     }
 
 

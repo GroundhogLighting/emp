@@ -58,20 +58,13 @@ project "emp_core"
 
     end
 
-    filter "configurations:Release"    
+    filter "configurations:RELEASE"    
     links {
-        "tbb"
+        "tbb","tbbmalloc","tbbmalloc_proxy"
     }
 
-    filter "configurations:Debug"
-    files {
-        --emp_core_dir.."/3rdparty/nvwa/nvwa/debug_new.cpp", 
-    }
-    includedirs{
-        --emp_core_dir.."/3rdparty/nvwa/nvwa",           
-    }
+    filter "configurations:DEBUG"    
     links {
-        "tbb_debug"
+        "tbb_debug","tbbmalloc_debug","tbbmalloc_proxy_debug"
     }
-
 
