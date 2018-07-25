@@ -2,7 +2,7 @@
 /*****************************************************************************
  Emp
  
- Copyright (C) 2017  German Molina (germolinal@gmail.com)
+ Copyright (C) 2018  German Molina (germolinal@gmail.com)
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ int genBox(lua_State * L)
     std::string name = getNameFromTable(L,1);
     
     // get Size
-    double x, y, z;
+    double x=0, y=0, z=0;
     if(fieldExists(L,1, "size")){
         getColorFromTableField(L, 1, "size", &x, &y, &z);
     }else{

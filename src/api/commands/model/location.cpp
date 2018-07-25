@@ -2,7 +2,7 @@
 /*****************************************************************************
  Emp
  
- Copyright (C) 2017  German Molina (germolinal@gmail.com)
+ Copyright (C) 2018  German Molina (germolinal@gmail.com)
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -32,16 +32,6 @@ int getLocation(lua_State * L)
     
     Location * l = model->getLocation();
     
-    /*
-    double latitude; //!< The latitude in degrees North (use negative for South)
-    double longitude; //!< The longitude in degrees West (use negative for East)
-    double timeZone; //!< in GMT units
-    std::string city; //!< The name of the city
-    std::string country; //!< The name of the country
-    double albedo = 0.2; //!< The albedo in the location
-    Weather weather = Weather(); //!< The weather of the location obtained from a weather file
-    double elevation = 0; //!< The elevation
-    */
     
     // Create the table
     lua_newtable(L); // index = 1
@@ -54,7 +44,7 @@ int getLocation(lua_State * L)
     lua_setfield(L, 1, "longitude");
     
     lua_pushnumber(L, l->getTimeZone());
-    lua_setfield(L, 1, "time_zone");
+    lua_setfield(L, 1, "time zone");
     
     lua_pushnumber(L, l->getAlbedo());
     lua_setfield(L, 1, "albedo");
@@ -67,6 +57,9 @@ int getLocation(lua_State * L)
     
     lua_pushstring(L, l->getCountry().c_str());
     lua_setfield(L, 1, "country");
+    
+    lua_pushnumber(L, model->getNorthCorrection());
+    lua_setfield(L, 1, "north correction");
     
     
     return 1;
