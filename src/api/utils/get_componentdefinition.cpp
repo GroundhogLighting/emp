@@ -27,7 +27,7 @@ ComponentDefinition * getComponentDefinition(lua_State * L, std::string * compon
 #ifdef _DEBUG
     INIT_STACK_CHECK_STACK_SIZE
 #endif
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     ComponentDefinition * cd = model->getComponentDefinitionByName(componentDefinitionName);
     
     if (cd == nullptr) {

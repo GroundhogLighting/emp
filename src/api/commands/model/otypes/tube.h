@@ -43,7 +43,7 @@ extern "C" {
 
 void fillData(Tube * o, lua_State * L, int tableIndex);
 
-//! Adds a new tube object to the GroundhogModel
+//! Adds a new tube object to the EmpModel
 /*!
  @author German Molina
  @param[in] L The lua_State of the api

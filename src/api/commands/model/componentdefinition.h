@@ -32,7 +32,7 @@ extern "C" {
 #include "emp_core.h"
 
 
-//! Retrieves a list of the ComponentDefinition objects in the GroundhogModel
+//! Retrieves a list of the ComponentDefinition objects in the EmpModel
 /*!
  @author German Molina
  @param[in] L The lua_State of the api
@@ -57,7 +57,7 @@ int countComponentDefinitionObjects(lua_State * L);
 int countComponentDefinitionInstances(lua_State * L);
 
 
-//! Checks if a ComponentDefinition exists in a GroundhogModel
+//! Checks if a ComponentDefinition exists in a EmpModel
 /*!
  @author German Molina
  @param[in] L The lua state

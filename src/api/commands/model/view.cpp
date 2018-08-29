@@ -31,7 +31,7 @@ int getViewsList(lua_State * L)
     // Check the number of arguments
     checkNArguments(L, 0);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     size_t nwps = model->getNumViews();
     
     // Create the table
@@ -58,7 +58,7 @@ int viewExists(lua_State * L)
     // Retrieve the first argument
     std::string viewName = lua_tostring(L, 1);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Check if workplane exists
     bool exists = (model->getViewByName(&viewName) != nullptr);
@@ -132,7 +132,7 @@ int createView(lua_State * L)
     }
     
     // Add it to the model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     model->addView(view);
     
     // Return the view name

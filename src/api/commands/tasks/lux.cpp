@@ -101,10 +101,15 @@ int perezSkyWorkplaneIlluminance(lua_State * L)
     
     ENSURE_WEATHER
     
-    std::cout << "TODO: Allow location to find a certain time of day, for gendaylit... using -W 500 200 for now" << std::endl;
+    HourlyData now = HourlyData();
+    location->getDataByDate(
+                            getIntFromTableField(L, 1, "month"),
+                            getIntFromTableField(L, 1, "day"),
+                            getIntFromTableField(L, 1, "hour"),
+                            &now);
     
-    std::string direct_normal = std::to_string(500);
-    std::string diffuse_horizontal = std::to_string(200);
+    std::string direct_normal = std::to_string(now.direct_normal);
+    std::string diffuse_horizontal = std::to_string(now.diffuse_horizontal);
     
     std::string sky = "gendaylit "+month+" "+day+" "+hour+" -W "+direct_normal+" "+diffuse_horizontal+" -g "+albedo+" -a "+latitude+" -o " + longitude +" -m "+meridian;
     

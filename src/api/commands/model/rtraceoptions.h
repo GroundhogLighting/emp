@@ -33,7 +33,7 @@ int printRtraceOptions(lua_State * L);
 
 //! Sets options for RTRACE routines of the model.
 /*!
-This function will retrieve the current GroundhogModel and
+This function will retrieve the current EmpModel and
 modify its RTRACE options
 
 @author German Molina

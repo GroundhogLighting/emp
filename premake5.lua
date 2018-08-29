@@ -27,16 +27,15 @@ filter "configurations:RELEASE"
         "TBB_DO_THREADING_TOOLS=0" 
     }
 
--- Fix to set Windows 10 instead of 8.1
-if is_windows then
-    systemversion(os.winSdkVersion() .. ".0")
-end
 
 dofile(premakescripts_dir.."/lua.lua")
 dofile(premakescripts_dir.."/emp_core.lua")
 dofile(premakescripts_dir.."/emp.lua")
 dofile(premakescripts_dir.."/rtrad.lua")
 dofile(premakescripts_dir.."/tbb.lua")
+dofile(premakescripts_dir.."/emp_core_tests.lua")
+dofile(premakescripts_dir.."/google_test.lua")
+dofile(premakescripts_dir.."/doc.lua")
 
 --package.path = package.path .. ";"..premakescripts_dir.."/?.lua"
 --require("tbb")

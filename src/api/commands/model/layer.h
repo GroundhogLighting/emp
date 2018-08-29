@@ -32,7 +32,7 @@ extern "C" {
 #include "emp_core.h"
 
 
-//! Retrieves a list of the Layer objects in the GroundhogModel
+//! Retrieves a list of the Layer objects in the EmpModel
 /*!
  @author German Molina
  @param[in] L The lua_State of the api
@@ -57,7 +57,7 @@ int countLayerObjects(lua_State * L);
 int countLayerInstances(lua_State * L);
 
 
-//! Checks if a Layer exists in a GroundhogModel
+//! Checks if a Layer exists in a EmpModel
 /*!
  @author German Molina
  @param[in] L The lua state

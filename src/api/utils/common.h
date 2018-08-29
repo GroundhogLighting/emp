@@ -42,13 +42,13 @@ std::cerr << "STACK SIZE ERROR in line : "<< std::to_string(__LINE__) << " of fi
 #endif
 
 
-//! Retrieves the current GroundhogModel exposed to the API
+//! Retrieves the current EmpModel exposed to the API
 /*!
 @author German Molina
 @param L The lua_State * object
-@return The pointer to the current GroundhogModel
+@return The pointer to the current EmpModel
 */
-GroundhogModel * getCurrentModel(lua_State * L);
+EmpModel * getCurrentModel(lua_State * L);
 
 
 //! Retrieves the current TaskManager exposed to the API

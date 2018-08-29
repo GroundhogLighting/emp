@@ -45,7 +45,7 @@
 " You should have received a copy of the GNU General Public License along with \n"\
 " this program.If not, see http ://www.gnu.org/licenses/.\n\n"
 
-/// Name of the global variable pointing to the GroundhogModel in the Lua API
+/// Name of the global variable pointing to the EmpModel in the Lua API
 #define LUA_MODEL_VARIABLE "currentmodel"
 
 /// Name of the global variable pointing to the TaskManager in the Lua API

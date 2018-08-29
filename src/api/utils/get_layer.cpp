@@ -28,7 +28,7 @@ Layer * getLayer(lua_State * L, std::string * layerName)
 #ifdef _DEBUG
     INIT_STACK_CHECK_STACK_SIZE
 #endif
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     Layer * layer = model->getLayerByName(layerName);
     
     if (layer == nullptr) {
@@ -60,7 +60,7 @@ Layer * getLayerAccordingToTable(lua_State * L, int tableIndex)
             layer = getComponentDefinition(L, &componentName);
             
         }else{
-            GroundhogModel * model = getCurrentModel(L);
+            EmpModel * model = getCurrentModel(L);
             
             // Default to first layer... Create one if not.
             if(model->getNumLayers() == 0){

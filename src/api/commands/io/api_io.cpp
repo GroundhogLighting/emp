@@ -38,17 +38,6 @@ int warn(lua_State * L)
 	return 0;
 }
 
-int raise(lua_State * L)
-{
-    // Check single argument
-    checkNArguments(L, 1);
-    
-    // Check that it is a string
-    checkArgType(L, LUA_TSTRING, 1);
-    
-    executionError(L,std::string(lua_tostring(L, 1)));
-	return 0;
-}
 
 
 int printValue(lua_State * L)

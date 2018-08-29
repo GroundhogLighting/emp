@@ -27,7 +27,7 @@ const Otype * const getOtype(lua_State * L, std::string * objectName)
 #ifdef _DEBUG
     INIT_STACK_CHECK_STACK_SIZE
 #endif
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     const Otype * object = model->getOtypeByName(objectName);
     
     if (object == nullptr) {

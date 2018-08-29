@@ -129,7 +129,7 @@ int main(int argc, char* argv[]){
          }
          
          /* CREATE A GROUNDHOG MODEL */
-         GroundhogModel model = GroundhogModel();
+         EmpModel model = EmpModel();
          TaskManager taskManager = TaskManager();
          
          /* CREATE A NEW LUA STATE */
@@ -147,7 +147,7 @@ int main(int argc, char* argv[]){
              // No model to input... just script
              
          } else if(stringInclude(argv[1],".lua")){
-             /* GroundhogModels are actually Lua scripts */
+             /* EmpModels are actually Lua scripts */
              // Load script
              int s,r;
              s = luaL_loadfile(L,argv[1]);

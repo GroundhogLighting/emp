@@ -27,7 +27,7 @@ Material * getMaterial(lua_State * L, std::string * materialName)
 #ifdef _DEBUG
     INIT_STACK_CHECK_STACK_SIZE
 #endif
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     Material * material = model->getMaterialByName(materialName);
     
     if (material == nullptr) {

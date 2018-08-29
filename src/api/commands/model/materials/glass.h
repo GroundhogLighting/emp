@@ -42,7 +42,7 @@ extern "C" {
 
 void fillData(Glass * o, lua_State * L, int tableIndex);
 
-//! Adds a new glass object to the GroundhogModel
+//! Adds a new glass object to the EmpModel
 /*!
  @author German Molina
  @param[in] L The lua_State of the api

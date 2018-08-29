@@ -29,7 +29,7 @@ int getMaterialsList(lua_State * L)
     // Check the number of arguments
     checkNArguments(L, 0);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     size_t nmaterials = model->getNumMaterials();
     
     // Create the table
@@ -57,7 +57,7 @@ int materialExists(lua_State * L)
     // Retrieve the first argument
     std::string materialName = lua_tostring(L, 1);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Check if workplane exists
     bool exists = (model->getMaterialByName(&materialName) != nullptr);

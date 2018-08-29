@@ -42,7 +42,7 @@ extern "C" {
 // Basic IO
 #include "./commands/io/api_io.h"
 
-// GroundhogModel data
+// EmpModel data
 #include "./commands/model/componentdefinition.h"
 #include "./commands/model/componentinstance.h"
 #include "./commands/model/layer.h"
@@ -92,25 +92,17 @@ void registerCommands(lua_State * L)
 {
   
 
-    /* ====================== */
-    /* @APIgroup TASK MANAGER */
-    /* ====================== */
     
-    /* @APIfunction
-     
-     Calls RVU program
-     */
-    lua_register(L, "review", review);
 
     /* ====================== */
-    /* @APIgroup TASK MANAGER */
+    // @APIgroup TASK MANAGER
     /* ====================== */
 
     /* @APIfunction
 
     Solves the task manager
     */
-    lua_register(L, "solve", solveTaskManager);
+    lua_register(L, "solve_tasks", solveTaskManager);
 
     /* @APIfunction
 
@@ -126,16 +118,9 @@ void registerCommands(lua_State * L)
 
     
     /* ======================== */
-    /* @APIgroup INPUT / OUTPUT */
+    // @APIgroup INPUT / OUTPUT
     /* ======================== */
-    
-    /* @APIfunction
-     
-     Throws an error and exits the script
-     
-     @param[required] message The error message to show
-     */
-    lua_register(L, "raise", raise);
+        
     
     /* @APIfunction
      
@@ -156,14 +141,14 @@ void registerCommands(lua_State * L)
     
     
     /* ============================== */
-    /* @APIgroup GROUNDHOG MODEL DATA */
+    // @APIgroup GROUNDHOG MODEL DATA
     /* ============================== */
     
     /* @APIfunction
      
      Retrieves an array with the workplanes names in the model
      
-     @return workplane_array An array with the workplanes names
+     @return workplanes An array with the workplanes names
      */
     lua_register(L, "get_workplanes_list", getWorkplanesList);
     
@@ -172,7 +157,7 @@ void registerCommands(lua_State * L)
      Retrieves a table with the workplane information in the model.
      That is, name, maximum size of pixel (triangulation), tasks, etc.
      
-     @return workplane_array An array with the workplanes names
+     @return workplanes An array with the workplanes names
      */
     lua_register(L, "get_workplanes_data", getWorkplanesData);
     
@@ -181,7 +166,7 @@ void registerCommands(lua_State * L)
      Checks if a workplane does exists in the model
      
      @param[required] workplane_name The name of the workplane
-     @return exist? True or False
+     @return exist True or False
      */
     lua_register(L, "is_workplane", workplaneExists);
     
@@ -190,7 +175,7 @@ void registerCommands(lua_State * L)
      Counts the number of polygons in a workplane
      
      @param[required] workplane_name The name of the workplane
-     @return The number of polygons
+     @return n_polygons The number of polygons
      */
     lua_register(L, "count_workplane_polygons",countWorkplanePolygons);
     
@@ -199,7 +184,6 @@ void registerCommands(lua_State * L)
      Creates a new Workplane
      
      @param[required] workplane_name The name of the workplane
-     @return The number of polygons
      */
     lua_register(L, "workplane",createWorkplane);
     
@@ -207,7 +191,7 @@ void registerCommands(lua_State * L)
      
      Retrieves an array with the metrics
      
-     @return The metrics
+     @return metrics The metrics
      */
     lua_register(L, "get_metrics",getTasks);
     
@@ -215,8 +199,8 @@ void registerCommands(lua_State * L)
      
      Retrieves a single metric
      
-     @param The name of the metric to retrieve
-     @return The metrics
+     @param[required] name The name of the metric to retrieve
+     @return a_metric The metric
      */
     lua_register(L, "get_metric",getTask);
     
@@ -224,7 +208,7 @@ void registerCommands(lua_State * L)
      
      Retrieves an array with the layer names in the model
      
-     @return workplane_array An array with the layer names
+     @return layer_names An array with the layer names
      */
     lua_register(L, "get_layers_list", getLayersList);
     
@@ -233,7 +217,7 @@ void registerCommands(lua_State * L)
      Checks if a layer does exist in the model
      
      @param[required] layer_name The name of the workplane
-     @return exist? True or False
+     @return exist True or False
      */
     lua_register(L, "is_layer", layerExists);
     
@@ -242,7 +226,7 @@ void registerCommands(lua_State * L)
      Counts the number of objects in a layer
      
      @param[required] layer_name The name of the layer
-     @return The number of objects
+     @return count The number of objects
      */
     lua_register(L, "count_layer_objects",countLayerObjects);
     
@@ -251,7 +235,7 @@ void registerCommands(lua_State * L)
      Counts the number of ComponentInstances in a layer
      
      @param[required] layer_name The name of the layer
-     @return The number of ComponentInstances
+     @return count The number of ComponentInstances
      */
     lua_register(L, "count_layer_instances",countLayerInstances);
     
@@ -260,7 +244,7 @@ void registerCommands(lua_State * L)
      
      Retrieves an array with the ComponentDefinition names in the model
      
-     @return workplane_array An array with the ComponentDefinition names
+     @return definitions An array with the ComponentDefinition names
      */
     lua_register(L, "get_component_definitions_list", getComponentDefinitionsList);
     
@@ -268,8 +252,8 @@ void registerCommands(lua_State * L)
      
      Checks if a ComponentDefinition does exist in the model
      
-     @param[required] layer_name The name of the ComponentDefinition
-     @return exist? True or False
+     @param[required] name The name of the ComponentDefinition
+     @return exist True or False
      */
     lua_register(L, "is_component_definition", componentDefinitionExists);
     
@@ -277,8 +261,8 @@ void registerCommands(lua_State * L)
      
      Adds a Component Definition to the model
      
-     @param[required] layer_name The name of the ComponentDefinition
-     @return exist? True or False
+     @param[required] name The name of the ComponentDefinition
+     @return a_component The name of the component definition
      */
     lua_register(L, "component", createComponentDefinition);
     
@@ -288,7 +272,7 @@ void registerCommands(lua_State * L)
      Counts the number of objects in a ComponentDefinition
      
      @param[required] name The name of the ComponentDefinition
-     @return The number of objects
+     @return count The number of objects
      */
     lua_register(L, "count_component_definition_objects",countComponentDefinitionObjects);
     
@@ -297,7 +281,7 @@ void registerCommands(lua_State * L)
      Counts the number of ComponentInstances in a ComponentDefinition
      
      @param[required] name The name of the ComponentDefinition
-     @return The number of ComponentInstances
+     @return count The number of ComponentInstances
      */
     lua_register(L, "count_component_definition_instances",countComponentDefinitionInstances);
     
@@ -306,7 +290,7 @@ void registerCommands(lua_State * L)
      Retrieves a table with the location of the model, containing: latitude, longitude,
      time_zone, city, country, albedo and elevation fields.
      
-     @return A table with the location data
+     @return location A table with the location data
      */
     lua_register(L, "get_location_data",getLocation);
     
@@ -314,7 +298,7 @@ void registerCommands(lua_State * L)
      
      Retrieves a list of all the material names in the model
      
-     @return A list with all the names of the materials
+     @return materials A list with all the names of the materials
      */
     lua_register(L, "get_materials_list",getMaterialsList);
     
@@ -324,7 +308,7 @@ void registerCommands(lua_State * L)
      Checks if a material exists in the model
      
      @param[required] name The name of the material
-     @return A list with all the names of the materials
+     @return is_material A list with all the names of the materials
      */
     lua_register(L, "is_material", materialExists);
     
@@ -333,7 +317,7 @@ void registerCommands(lua_State * L)
      Gets the class of a certain material
      
      @param[required] name The name of the material
-     @return A list with all the names of the materials
+     @return mat_class A list with all the names of the materials
      */
     lua_register(L, "get_material_class", getMaterialType);
     
@@ -342,7 +326,7 @@ void registerCommands(lua_State * L)
      Checks if an object exists in the model
      
      @param[required] name The name of the object
-     @return A list with all the names of the materials
+     @return is_object Is it?
      */
     lua_register(L, "is_object", otypeExists);
     
@@ -351,189 +335,189 @@ void registerCommands(lua_State * L)
      Gets the class of a certain object
      
      @param[required] name The name of the material
-     @return A list with all the names of the materials
+     @return obj_class A list with all the names of the materials
      */
     lua_register(L, "get_object_class", getOtypeType);
     
     /* @APIfunction
      
-     Adds a new Layer object to the GroundhogModel
+     Adds a new Layer object to the EmpModel
      
      @param[required] name The name of the layer
-     @return The name of the created layer
+     @return layer The name of the created layer
      */
     lua_register(L, "layer", createLayer);
     
     
     /* @APIfunction
      
-     Adds a new Bubble object to the GroundhogModel
+     Adds a new Bubble object to the EmpModel
      
      @param[required] data The table with the data
-     @return A table with the object information at time of creation
+     @return a_bubble A table with the object information at time of creation
      */
     lua_register(L, "bubble", createBubble);
     
     /* @APIfunction
      
-     Adds a new Cone object to the GroundhogModel
+     Adds a new Cone object to the EmpModel
      
      @param[required] data The table with the data
-     @return A table with the object information at time of creation
+     @return a_cone A table with the object information at time of creation
      */
     lua_register(L, "cone", createCone);
     
     /* @APIfunction
      
-     Adds a new Cup object to the GroundhogModel
+     Adds a new Cup object to the EmpModel
      
      @param[required] data The table with the data
-     @return A table with the object information at time of creation
+     @return a_cup A table with the object information at time of creation
      */
     lua_register(L, "cup", createCup);
     
     /* @APIfunction
      
-     Adds a new Cylinder object to the GroundhogModel
+     Adds a new Cylinder object to the EmpModel
      
      @param[required] data The table with the data
-     @return A table with the object information at time of creation
+     @return a_cylinder A table with the object information at time of creation
      */
     lua_register(L, "cylinder", createCylinder);
     
     /* @APIfunction
      
-     Adds a new Polygon object to the GroundhogModel
+     Adds a new Polygon object to the EmpModel
      
      @param[required] data The table with the data
-     @return A table with the object information at time of creation
+     @return a_polygon A table with the object information at time of creation
      */
     lua_register(L, "polygon", createFace);
     
     /* @APIfunction
      
-     Adds a new Ring object to the GroundhogModel
+     Adds a new Ring object to the EmpModel
      
      @param[required] data The table with the data
-     @return A table with the object information at time of creation
+     @return a_ring A table with the object information at time of creation
      */
     lua_register(L, "ring", createRing);
     
     /* @APIfunction
      
-     Adds a new Source object to the GroundhogModel
+     Adds a new Source object to the EmpModel
      
      @param[required] data The table with the data
-     @return A table with the object information at time of creation
+     @return a_source A table with the object information at time of creation
      */
     lua_register(L, "source", createSource);
     
     /* @APIfunction
      
-     Adds a new Sphere object to the GroundhogModel
+     Adds a new Sphere object to the EmpModel
      
      @param[required] data The table with the data
-     @return A table with the object information at time of creation
+     @return a_sphere A table with the object information at time of creation
      */
     lua_register(L, "sphere", createSphere);
     
     /* @APIfunction
      
-     Adds a new Tube object to the GroundhogModel
+     Adds a new Tube object to the EmpModel
      
      @param[required] data The table with the data
-     @return A table with the object information at time of creation
+     @return a_tube A table with the object information at time of creation
      */
     lua_register(L, "tube", createTube);
     
     /* @APIfunction
      
-     Adds a new Dielectric material to the GroundhogModel
+     Adds a new Dielectric material to the EmpModel
      
      @param[required] data The table with the data
-     @return The name of the material
+     @return a_dielectric The name of the material
      */
     lua_register(L, "dielectric", createDielectric);
     
     /* @APIfunction
      
-     Adds a new Glass material to the GroundhogModel
+     Adds a new Glass material to the EmpModel
      
      @param[required] data The table with the data
-     @return The name of the material
+     @return a_glass The name of the material
      */
     lua_register(L, "glass", createGlass);
     
     /* @APIfunction
      
-     Adds a new Glow material to the GroundhogModel
+     Adds a new Glow material to the EmpModel
      
      @param[required] data The table with the data
-     @return The name of the material
+     @return a_glow The name of the material
      */
     lua_register(L, "glow", createGlow);
     
     /* @APIfunction
      
-     Adds a new Interface material to the GroundhogModel
+     Adds a new Interface material to the EmpModel
      
      @param[required] data The table with the data
-     @return The name of the material
+     @return an_interface The name of the material
      */
     lua_register(L, "interface", createInterface);
     
     /* @APIfunction
      
-     Adds a new Light material to the GroundhogModel
+     Adds a new Light material to the EmpModel
      
      @param[required] data The table with the data
-     @return The name of the material
+     @return a_light The name of the material
      */
     lua_register(L, "light", createLight);
     
     /* @APIfunction
      
-     Adds a new Metal material to the GroundhogModel
+     Adds a new Metal material to the EmpModel
      
      @param[required] data The table with the data
-     @return The name of the material
+     @return a_metal The name of the material
      */
     lua_register(L, "metal", createMetal);
     
     
     /* @APIfunction
      
-     Adds a new Plastic material to the GroundhogModel
+     Adds a new Plastic material to the EmpModel
      
      @param[required] data The table with the data
-     @return The name of the material
+     @return a_plastic The name of the material
      */
     lua_register(L, "plastic", createPlastic);
     
     /* @APIfunction
      
-     Adds a new Spotlight material to the GroundhogModel
+     Adds a new Spotlight material to the EmpModel
      
      @param[required] data The table with the data
-     @return The name of the material
+     @return a_spotlight The name of the material
      */
     lua_register(L, "spotlight", createSpotlight);
     
     /* @APIfunction
      
-     Adds a new Trans material to the GroundhogModel
+     Adds a new Trans material to the EmpModel
      
      @param[required] data The table with the data
-     @return The name of the material
+     @return a_trans The name of the material
      */
     lua_register(L, "trans", createTrans);
     
     /* @APIfunction
      
-     Adds a new View to the GroundhogModel
+     Adds a new View to the EmpModel
      
      @param[required] data The table with the data
-     @return The name of the view
+     @return view The name of the view
      */
     lua_register(L, "view", createView);
     
@@ -542,7 +526,7 @@ void registerCommands(lua_State * L)
      Returns a list of the views' names
      
      @param[required] data The table with the data
-     @return An array with the names of the views in the model
+     @return views An array with the names of the views in the model
      */
     lua_register(L, "get_views_list", getViewsList);
     
@@ -551,7 +535,7 @@ void registerCommands(lua_State * L)
      Returns a list of the views' names
      
      @param[required] data The table with the data
-     @return An array with the names of the views in the model
+     @return is_a_view Does the view exist in the model?
      */
     lua_register(L, "is_view", viewExists);
     
@@ -560,7 +544,6 @@ void registerCommands(lua_State * L)
      Returns a list of the views' names
      
      @param[required] data The table with the data
-     @return An array with the names of the views in the model
      */
     lua_register(L, "box", genBox);
     
@@ -574,12 +557,12 @@ void registerCommands(lua_State * L)
     
     
     /* =============================== */
-    /* @APIgroup SET-OPTIONS FUNCTIONS */
+    // @APIgroup SET-OPTIONS FUNCTIONS
     /* =============================== */
     
     /* @APIfunction
      
-     Modifies the ray-tracing options in the current GroundhogModel
+     Modifies the ray-tracing options in the current EmpModel
      
      @param[required] options A Table with the ray-tracing options to set
      */
@@ -596,7 +579,7 @@ void registerCommands(lua_State * L)
     
     
     /* ============================ */
-    /* @APIgroup EXPORT TO RADIANCE */
+    // @APIgroup EXPORT TO RADIANCE
     /* ============================ */
 
     /* @APIfunction
@@ -633,8 +616,6 @@ void registerCommands(lua_State * L)
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
-    
     lua_register(L,"write_components", writeRadComponentDefinitions);
     
     /* @APIfunction
@@ -644,8 +625,6 @@ void registerCommands(lua_State * L)
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
-    
     lua_register(L,"write_views", writeRadViews);
     
     /* @APIfunction
@@ -655,8 +634,6 @@ void registerCommands(lua_State * L)
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
-    
     lua_register(L,"write_current_sky", writeRadCurrentSky);
     
     /* @APIfunction
@@ -666,8 +643,6 @@ void registerCommands(lua_State * L)
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
-    
     lua_register(L,"write_current_weather", writeRadCurrentWeather);
     
     /* @APIfunction
@@ -677,8 +652,6 @@ void registerCommands(lua_State * L)
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
-    
     lua_register(L,"write_materials", writeRadMaterials);
     
     /* @APIfunction
@@ -688,8 +661,6 @@ void registerCommands(lua_State * L)
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
-    
     lua_register(L,"write_layers", writeRadLayers);
     
     /* @APIfunction
@@ -699,8 +670,6 @@ void registerCommands(lua_State * L)
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
-    
     lua_register(L,"write_photosensors", writeRadPhotosensors);
     
     /* @APIfunction
@@ -710,13 +679,11 @@ void registerCommands(lua_State * L)
      @param[required] task_name The name of the task to add
      @param[required] options The options given
      */
-    //lua_register(L, "task", addTask);
-    
     lua_register(L,"write_workplane", writeRadWorkplane);
     
     
     /* ===================== */
-    /* @APIgroup RAY-TRACING */
+    // @APIgroup RAY-TRACING
     /* ===================== */
     
     /* @APIfunction
@@ -780,6 +747,15 @@ void registerCommands(lua_State * L)
     lua_register(L,"push_metric", pushJSONMetric);
     
     
+    /* ====================== */
+    // @APIgroup OTHER
+    /* ====================== */
+    
+    /* @APIfunction
+     
+     Calls RVU program
+     */
+    lua_register(L, "review", review);
     
     
     

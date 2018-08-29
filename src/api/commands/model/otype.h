@@ -33,7 +33,7 @@ extern "C" {
 #include "emp_core.h"
 
 
-//! Checks if a Material exists in a GroundhogModel
+//! Checks if a Material exists in a EmpModel
 /*!
  @author German Molina
  @param[in] L The lua state

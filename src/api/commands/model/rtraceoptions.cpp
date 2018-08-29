@@ -36,7 +36,7 @@ int printRtraceOptions(lua_State * L)
     int nargs[2] = { 0, 1 };
     int n = checkNArguments(L, nargs,2);
 
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     RTraceOptions * options = model->getRTraceOptions();
 
     // check type
@@ -60,7 +60,7 @@ int setRtraceOptions(lua_State *L)
 	// Check type
     checkArgType(L, LUA_TTABLE, 1);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     RTraceOptions * options = model->getRTraceOptions();
     
     // Fill the table
