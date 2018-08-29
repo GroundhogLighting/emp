@@ -38,6 +38,7 @@ extern "C" {
 #include "./commands/tasks/udi.h"
 #include "./commands/tasks/ase.h"
 #include "./commands/tasks/da.h"
+#include "./commands/tasks/cumulative_sky.h"
 
 // Basic IO
 #include "./commands/io/api_io.h"
@@ -141,7 +142,7 @@ void registerCommands(lua_State * L)
     
     
     /* ============================== */
-    // @APIgroup GROUNDHOG MODEL DATA
+    // @APIgroup EMP MODEL DATA
     /* ============================== */
     
     /* @APIfunction
@@ -735,6 +736,28 @@ void registerCommands(lua_State * L)
      @param[required] options The options given
      */
     lua_register(L,"workplane_ase", workplaneASE);
+    
+    /* @APIfunction
+     
+     Pushes a Calculate Annual Solar Irradiation task to the
+     task manager
+     
+     @param[required] task_name The name of the task to add
+     @param[required] options The options given
+     */
+    lua_register(L,"workplane_solar_irradiation", workplaneSolarIrradiation);
+    
+    /* @APIfunction
+     
+     Pushes a Calculate Annual Daylight Exposure task to the
+     task manager
+     
+     @param[required] task_name The name of the task to add
+     @param[required] options The options given
+     */
+    lua_register(L,"workplane_daylight_exposure", workplaneDaylightExposure);
+    
+    
     
     /* @APIfunction
      

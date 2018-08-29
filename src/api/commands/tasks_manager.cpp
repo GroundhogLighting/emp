@@ -30,6 +30,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "./tasks/da.h"
 #include "./tasks/udi.h"
 #include "./tasks/ase.h"
+#include "./tasks/cumulative_sky.h"
+
 
 int solveTaskManager(lua_State * L)
 {
@@ -77,34 +79,44 @@ int pushJSONMetric(lua_State * L)
     // Get class field
     std::string className = getStringFromTableField(L, 1, "class");
     
+    // Compare in lowercase... more flexibility
+    downCase(&className);
+    
     // Do what should be done
-    if(className == "UDI" || className == "Useful Daylight Illuminance"){
+    if(className == "UDI" || className == "useful daylight illuminance"){
         return workplaneUDI(L);
         
-    }else if(className == "DA" || className == "Daylight Autonomy"){
+    }else if(className == "DA" || className == "daylight autonomy"){
         return workplaneDA(L);
         
-    }else if(className == "Clear sky illuminance"){
+    }else if(className == "clear sky illuminance"){
         return clearSkyWorkplaneIlluminance(L);
         
-    }else if(className == "Intermediate sky illuminance"){
+    }else if(className == "intermediate sky illuminance"){
         return intermediateSkyWorkplaneIlluminance(L);
         
-    }else if(className == "Overcast sky illuminance"){
+    }else if(className == "overcast sky illuminance"){
         return overcastSkyWorkplaneIlluminance(L);
         
-    }else if(className == "Weather sky illuminance"){
+    }else if(className == "weather sky illuminance"){
         return perezSkyWorkplaneIlluminance(L);
         
-    }else if(className == "DF" || className == "Daylight Factor"){
+    }else if(className == "df" || className == "faylight factor"){
         return workplaneDF(L);
         
-    }else if(className == "ASE" || className == "Annual Sunlight Exposure"){
+    }else if(className == "ase" || className == "annual sunlight exposure"){
         return workplaneASE(L);
+        
+    }else if(className == "annual solar irradiation"){
+        return workplaneSolarIrradiation(L);
+        
+    }else if(className == "annual daylight exposure"){
+        return workplaneDaylightExposure(L);
         
     }else {
         std::string err = "Unknown metric class '"+className+"'";
         usageError(L, err);
     }
+    
     return 0;
 }

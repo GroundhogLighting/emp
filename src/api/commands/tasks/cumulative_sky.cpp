@@ -19,3 +19,55 @@
  *****************************************************************************/
 
 #include "./cumulative_sky.h"
+#include "./common.h"
+
+int workplaneSolarIrradiation(lua_State * L)
+{
+    ENSURE_MINIMUM_WORKPLANE_METRIC_DATA
+    
+    // Create OconvOptions
+    OconvOptions oconvOptions = OconvOptions();
+    
+    // Fill options
+    fillOptionsFromLuaTable(&oconvOptions, L, 1);
+    
+    
+    double min = getDoubleFromTableField(L, 1, MIN_LUX_FIELD);
+    double max = getDoubleFromTableField(L, 1, MAX_LUX_FIELD);
+    
+    
+    CheckSolarIrradiationCompliance * t = new CheckSolarIrradiationCompliance(name, model,rtraceOptions,wp,min,max);
+    
+    t->reportResults = true;
+    
+    // Get task manager
+    tm->addTask(t);
+    
+    return 0;
+}
+
+
+int workplaneDaylightExposure(lua_State * L)
+{
+    ENSURE_MINIMUM_WORKPLANE_METRIC_DATA
+    
+    // Create OconvOptions
+    OconvOptions oconvOptions = OconvOptions();
+    
+    // Fill options
+    fillOptionsFromLuaTable(&oconvOptions, L, 1);
+    
+    
+    double min = getDoubleFromTableField(L, 1, MIN_LUX_FIELD);
+    double max = getDoubleFromTableField(L, 1, MAX_LUX_FIELD);
+    
+    
+    CheckDaylightExposureCompliance * t = new CheckDaylightExposureCompliance(name, model,rtraceOptions,wp,min,max);
+    
+    t->reportResults = true;
+    
+    // Get task manager
+    tm->addTask(t);
+    
+    return 0;
+}

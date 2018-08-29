@@ -1,6 +1,6 @@
 
 
-project "emp_tests"
+project "emp_core_tests"
 
     kind "ConsoleApp"
     buildoptions { '-std=c++11','-stdlib=libc++' }

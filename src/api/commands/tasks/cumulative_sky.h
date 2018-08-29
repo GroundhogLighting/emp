@@ -19,3 +19,11 @@
  *****************************************************************************/
 
 #pragma once
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+
+int workplaneSolarIrradiation(lua_State * L);
+int workplaneDaylightExposure(lua_State * L);
