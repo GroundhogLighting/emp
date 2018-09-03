@@ -100,7 +100,9 @@ files {
     rad_common.."/xf.c",
     rad_common.."/zeroes.c"
 }
-targetdir (libs_dir.."/%{cfg.platform}".."/%{cfg.buildcfg}")   
+
+targetdir(libs_dir)
+
 includedirs{
     emp_core_dir.."/3rdparty/Radiance/src/**",
     emp_core_dir.."/3rdparty"

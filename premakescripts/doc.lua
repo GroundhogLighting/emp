@@ -6,7 +6,7 @@ local p = premake
 
 
 newaction {
-	trigger = "doc",
+	trigger = "emp_doc",
 	description = "Builds the Emp Lua API documentation",
 
 	onStart = function()
@@ -104,6 +104,19 @@ newaction {
                                 r["name"] = string.sub(aux,1,ini)                                
                                 r["description"] = string.sub(aux,ini+1)
                                 returns[#returns + 1] = r
+                            elseif has_tag(line,"@example") then
+                                -- start recording example.
+                                local r = {}
+                                while true do
+                                    i = i+1
+                                    line = lines[i]
+                                    if has_tag(line,"@endexample") then
+                                        break
+                                    end
+                                    r[#r+1] = line
+                                end
+
+                                examples[#examples+1] = r
                             else
                                 error("Unknown tag in line "..line)
                             end
@@ -175,42 +188,49 @@ newaction {
                     -- print examples
                     file:write("\n{% tabs %}".."\n")
                     
-                    -- tab 1... default
-                    file:write("{% tab title='Example 1' %}".."\n")
-                    file:write("```lua".."\n")
-
-                    -- returns first
-                    if #returns > 0 then
-                        for j=1,#returns do
-                            if j>1 then
-                                file:write(",")                                                        
+                    if #examples > 0 then
+                        for j=1,#examples do                        
+                            file:write("{% tab title='Example "..j.."' %}".."\n")
+                            file:write("```lua".."\n")
+                            for ex_ln=1,#examples[j] do
+                                file:write(examples[j][ex_ln].."\n")
                             end
-                            file:write(returns[j]["name"])                                                        
+                            
+                            file:write("```".."\n")
+                            file:write("{% endtab %}".."\n")
                         end
-                        file:write(" = ")                                                        
-                    end
-                    
-                    -- Name of function with arguments
-                    args = ""
-                    for j=1,#params do
-                        if j ~= 1 then
-                            args = args..", "
-                        end
-                        args = args..trim(params[j]["name"])
-                    end
-
-                    file:write(func_name.."("..args..")".."\n")
-                        
-                    file:write("```".."\n")
-                    file:write("{% endtab %}".."\n")
-
-                    for j=1,#examples do                        
-                        file:write("{% tab title='Example "..(j+1).."' %}".."\n")
+                    else
+                        -- tab 1... default
+                        file:write("{% tab title='Example 1' %}".."\n")
                         file:write("```lua".."\n")
-                        file:write(examples[j])
+
+                        -- returns first
+                        if #returns > 0 then
+                            for j=1,#returns do
+                                if j>1 then
+                                    file:write(",")                                                        
+                                end
+                                file:write(returns[j]["name"])                                                        
+                            end
+                            file:write(" = ")                                                        
+                        end
+                        
+                        -- Name of function with arguments
+                        args = ""
+                        for j=1,#params do
+                            if j ~= 1 then
+                                args = args..", "
+                            end
+                            args = args..trim(params[j]["name"])
+                        end
+
+                        file:write(func_name.."("..args..")".."\n")
+                            
                         file:write("```".."\n")
                         file:write("{% endtab %}".."\n")
                     end
+
+                    
                     file:write("{% endtabs %}".."\n".."\n")
                     
 

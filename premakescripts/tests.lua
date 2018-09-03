@@ -1,16 +1,35 @@
+premake.modules.lua = {}
+local m = premake.modules.lua
+local p = premake
 
-lu = require("./3rdparty/LuaUnit/luaunit")
-
-
-TestToto = {} --class
-
-    function TestToto:test1_withFailure()
-        local a = 1
-        lu.assertEquals( a , 1 )
-        -- will fail
-        lu.assertEquals( a , 2 )
-    end
+newoption {
+    trigger     = "test_filter",
+    description = "Filters tests in the LuaUnit tests"
+}
 
 
---lu.LauaUnit.run()
-os.exit(lu.LuaUnit.run())
+newaction {
+	trigger = "emp_test",
+	description = "Test the Emp API",
+
+
+	execute = function()        
+        
+        
+        lu = require("./3rdparty/LuaUnit/luaunit")
+
+
+        dofile("./tests/io.lua")
+                
+
+        
+        if _OPTIONS["test_filter"] then
+            os.exit(lu.LuaUnit.run("--pattern",_OPTIONS["test_filter"]))
+        else
+            os.exit(lu.LuaUnit.run())
+        end
+          
+	end
+}
+
+return m

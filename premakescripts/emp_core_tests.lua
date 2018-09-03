@@ -7,7 +7,7 @@ project "emp_core_tests"
     language "C++" 
     runpathdirs { "." }
 
-    targetdir "../dist/%{cfg.buildcfg}/bin"
+    targetdir(path_dir)
 
     files { 
         emp_core_dir.."/main_test.cpp",

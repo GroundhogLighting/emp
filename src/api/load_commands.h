@@ -95,6 +95,86 @@ void registerCommands(lua_State * L)
 
     
 
+    /* ======================== */
+    // @APIgroup INPUT / OUTPUT
+    /* ======================== */
+    
+    
+    /* @APIfunction
+     
+     Prints a warning to the standard error, but continues processing the
+     script. This function can be used for informing the user of any
+     possible anomaly or probable misstake.
+     
+     @param[required] message The message to warn
+     */
+    lua_register(L, "warn", warn);
+    
+    /* @APIfunction
+     
+     Transforms a certain value into a detailed string. This works
+     very simply for strings and numbers. Tables are transformed
+     into JSON. However, Lua tables are more flexible
+     than JSON objects... so take care of that.
+     
+     @param[required] value The value to inspect
+     @return stringified The object in string format
+     
+     @example
+     r = inspect("car")
+     print( r )
+     
+     --[[
+     
+     "car"
+     
+     ]]
+     @endexample
+     
+     @example
+     r = inspect(1)
+     print( r )
+     
+     --[[
+     
+     1
+     
+     ]]
+     @endexample
+     
+     @example
+     r = inspect({1,2,3})
+     print( r )
+     --[[
+     
+     [
+     1.0,
+     2.0,
+     3.0
+     ]
+     
+     ]]
+     @endexample
+     
+     @example
+     r = inspect({
+     a = 1; b = 2; c = 3;
+     })
+     print( r )
+     --[[
+     
+     {
+     "a": 1.0,
+     "b": 2.0,
+     "c": 3.0
+     }
+     
+     ]]
+     @endexample
+     */
+    lua_register(L, "inspect", printValue);
+    
+    
     /* ====================== */
     // @APIgroup TASK MANAGER
     /* ====================== */
@@ -103,7 +183,7 @@ void registerCommands(lua_State * L)
 
     Solves the task manager
     */
-    lua_register(L, "solve_tasks", solveTaskManager);
+    lua_register(L, "solve_task_manager", solveTaskManager);
 
     /* @APIfunction
 
@@ -118,27 +198,6 @@ void registerCommands(lua_State * L)
     lua_register(L, "purge_tasks", cleanTaskManager);
 
     
-    /* ======================== */
-    // @APIgroup INPUT / OUTPUT
-    /* ======================== */
-        
-    
-    /* @APIfunction
-     
-     Prints a warning to the standard error, but continues processing the
-     script
-     
-     @param[required] message The message to warn
-     */
-    lua_register(L, "warn", warn);
-    
-    /* @APIfunction
-     
-     Prints a certain value to the standard output
-     
-     @param[required] value The value to print
-     */
-    lua_register(L, "inspect", printValue);
     
     
     /* ============================== */

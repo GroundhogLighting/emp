@@ -4,7 +4,7 @@ project "emp"
     language "C++"
     buildoptions { '-std=c++11' }
     runpathdirs { "." }
-    targetdir "../dist/%{cfg.buildcfg}/bin"
+    targetdir(path_dir)
     buildoptions { "-v"}
     files { 
         "../main.cpp",
@@ -59,7 +59,7 @@ project "emp"
     elseif is_linux then
         defines { "LINUX", "AVOID_SKP" }    
         links {
-            --third_party_dir.."/SketchUp/WIN/binaries/sketchup/x64/*",            
+            --third_party_dir.."/SketchUp/WIN/"..path_dir.."aries/sketchup/x64/*",            
             third_party_dir.."/intelTBB/lib/intel64/vc14/*",            
         }
 

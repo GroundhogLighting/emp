@@ -29,14 +29,14 @@ newaction {
         end
 
         -- Remove the old TBB version
-        os.rmdir("emp_core/libs/DEBUG/tbb/tbb_debug")
-        os.rmdir("emp_core/libs/RELEASE/tbb/tbb_release")
+        os.rmdir("emp_core/libs/DEBUG/tbb")
+        os.rmdir("emp_core/libs/RELEASE/tbb")
 
         -- Move results to Lib
         os.execute(mv.." emp_core/3rdparty/IntelTBB/build/tbb_release emp_core/libs/RELEASE/tbb")
         os.execute(mv.." emp_core/3rdparty/IntelTBB/build/tbb_debug emp_core/libs/DEBUG/tbb") 
         
-        -- Move the dynamic lib to the emp_core/bin
+        -- Move the dynamic lib to the emp_core/"..p_dir.."
         os.execute(cp.." emp_core/libs/RELEASE/tbb/libtbb.dylib emp_core/bin/RELEASE/libtbb.dylib") 
         os.execute(cp.." emp_core/libs/DEBUG/tbb/libtbb_debug.dylib emp_core/bin/DEBUG/libtbb_debug.dylib") 
         os.execute(cp.." emp_core/libs/RELEASE/tbb/libtbbmalloc.dylib emp_core/bin/RELEASE/libtbbmalloc.dylib") 
@@ -45,12 +45,12 @@ newaction {
         os.execute(cp.." emp_core/libs/DEBUG/tbb/libtbbmalloc_proxy_debug.dylib emp_core/bin/DEBUG/libtbbmalloc_proxy_debug.dylib") 
 
         -- Store a copy in EMP as well        
-        os.execute(cp.." emp_core/libs/RELEASE/tbb/libtbb.dylib dist/RELEASE/bin/libtbb.dylib") 
-        os.execute(cp.." emp_core/libs/DEBUG/tbb/libtbb_debug.dylib dist/DEBUG/bin/libtbb_debug.dylib") 
-        os.execute(cp.." emp_core/libs/RELEASE/tbb/libtbbmalloc.dylib dist/RELEASE/bin/libtbbmalloc.dylib") 
-        os.execute(cp.." emp_core/libs/DEBUG/tbb/libtbbmalloc_debug.dylib dist/DEBUG/bin/libtbbmalloc_debug.dylib") 
-        os.execute(cp.." emp_core/libs/RELEASE/tbb/libtbbmalloc_proxy.dylib dist/RELEASE/bin/libtbbmalloc_proxy.dylib") 
-        os.execute(cp.." emp_core/libs/DEBUG/tbb/libtbbmalloc_proxy_debug.dylib dist/DEBUG/bin/libtbbmalloc_proxy_debug.dylib") 
+        os.execute(cp.." emp_core/libs/RELEASE/tbb/libtbb.dylib dist/RELEASE"..p_dir.."/libtbb.dylib") 
+        os.execute(cp.." emp_core/libs/DEBUG/tbb/libtbb_debug.dylib dist/DEBUG"..p_dir.."/libtbb_debug.dylib") 
+        os.execute(cp.." emp_core/libs/RELEASE/tbb/libtbbmalloc.dylib dist/RELEASE"..p_dir.."/libtbbmalloc.dylib") 
+        os.execute(cp.." emp_core/libs/DEBUG/tbb/libtbbmalloc_debug.dylib dist/DEBUG"..p_dir.."/libtbbmalloc_debug.dylib") 
+        os.execute(cp.." emp_core/libs/RELEASE/tbb/libtbbmalloc_proxy.dylib dist/RELEASE"..p_dir.."/libtbbmalloc_proxy.dylib") 
+        os.execute(cp.." emp_core/libs/DEBUG/tbb/libtbbmalloc_proxy_debug.dylib dist/DEBUG"..p_dir.."/libtbbmalloc_proxy_debug.dylib") 
 
 
         -- Clean new ones

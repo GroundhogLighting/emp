@@ -6,7 +6,7 @@ project "emp_core"
     language "C++" 
     runpathdirs { "." }
 
-    targetdir(libs_dir.."/%{cfg.buildcfg}")
+    targetdir(libs_dir)
 
     files {                 
         emp_core_dir.."/src/**.cpp",  

@@ -101,7 +101,7 @@ int pushJSONMetric(lua_State * L)
     }else if(className == "weather sky illuminance"){
         return perezSkyWorkplaneIlluminance(L);
         
-    }else if(className == "df" || className == "faylight factor"){
+    }else if(className == "df" || className == "daylight factor"){
         return workplaneDF(L);
         
     }else if(className == "ase" || className == "annual sunlight exposure"){
