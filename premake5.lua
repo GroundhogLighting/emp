@@ -10,7 +10,10 @@ dofile(premakescripts_dir.."/prebuild.lua")
 workspace "Emp"
     architecture "x86_64"
     configurations { "DEBUG", "RELEASE" } 
-    defines { "EMP" }   
+    defines { "EMP" }              
+    staticruntime "On"
+    cppdialect "C++17"
+    systemversion "latest"
 
 filter "configurations:DEBUG"
     symbols "On" 

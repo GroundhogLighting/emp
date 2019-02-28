@@ -181,9 +181,15 @@ void registerCommands(lua_State * L)
 
     /* @APIfunction
 
-    Solves the task manager
+     Solves the task manager and prints the JSON results into a file.
+     If no file name is provided, the results are put in the stdout.
+
+     The tasks are not purged after solving... you may want to use the purge_tasks
+     method for that.
+     
+    @param[optional] The name of the file to put the results.
     */
-    lua_register(L, "solve_task_manager", solveTaskManager);
+    lua_register(L, "solve", solveTaskManager);
 
     /* @APIfunction
 

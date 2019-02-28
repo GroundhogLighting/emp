@@ -30,10 +30,25 @@ project "emp"
         emp_core_dir.."/3rdparty/Radiance/src/rt/",--rad_rt        
     }
 
+
+    filter "configurations:RELEASE"    
+        links {
+            "tbb","tbbmalloc","tbbmalloc_proxy"
+        }
+
+    filter "configurations:DEBUG"    
+        links {
+            "tbb_debug","tbbmalloc_debug","tbbmalloc_proxy_debug"
+        }
+
+
+
+
         
     
     -- Add the platform specific
-    if is_windows then
+    --if is_windows then
+    filter "system:windows"
         defines { "WIN" }    
         links {            
             emp_core_dir.."/3rdparty/intelTBB/lib/intel64/vc14/*",            
@@ -41,7 +56,9 @@ project "emp"
         includedirs {
             third_party_dir.."/SketchUp/WIN/headers", 
         }    
-    elseif is_macos then
+    --elseif is_macos then
+
+    filter "system:macosx"
         defines { "MACOS" }    
                 
         buildoptions {
@@ -56,25 +73,13 @@ project "emp"
         }   
 
         
-    elseif is_linux then
+    --elseif is_linux then
+    filter "system:linux"
         defines { "LINUX", "AVOID_SKP" }    
         links {
             --third_party_dir.."/SketchUp/WIN/"..path_dir.."aries/sketchup/x64/*",            
             third_party_dir.."/intelTBB/lib/intel64/vc14/*",            
         }
 
-    end
-
-
-    filter "configurations:RELEASE"    
-    links {
-        "tbb","tbbmalloc","tbbmalloc_proxy"
-    }
-
-    filter "configurations:DEBUG"    
-    links {
-        "tbb_debug","tbbmalloc_debug","tbbmalloc_proxy_debug"
-    }
-
-
+    --end
 

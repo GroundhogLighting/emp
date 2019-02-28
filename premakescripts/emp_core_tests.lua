@@ -3,7 +3,7 @@
 project "emp_core_tests"
 
     kind "ConsoleApp"
-    buildoptions { '-std=c++11','-stdlib=libc++' }
+    --buildoptions { '-std=c++11','-stdlib=libc++' }
     language "C++" 
     runpathdirs { "." }
 
@@ -35,12 +35,24 @@ project "emp_core_tests"
         "emp_core"
     }  
 
+    filter "configurations:RELEASE"    
+        links {
+            "tbb","tbbmalloc","tbbmalloc_proxy"
+        }
+
+    filter "configurations:DEBUG"    
+        links {
+            "tbb_debug","tbbmalloc_debug","tbbmalloc_proxy_debug"
+        }
+
 
     -- Add the platform specific
-    if is_windows then
+    --if is_windows then
+    filter "system:windows"
         defines { "WIN" }               
 
-    elseif is_macos then
+    --elseif is_macos then
+    filter "system:macosx"
         defines { "MACOS" }     
         linkoptions {            
             "-L "..libs_dir.."/%{cfg.buildcfg}/tbb",  
@@ -54,21 +66,14 @@ project "emp_core_tests"
             "SketchUpAPI.framework",
         }
         
-    elseif is_linux then
+    --elseif is_linux then
+    filter "system:linux"
         defines { "LINUX", "AVOID_SKP" }    
         links {            
             third_party_dir.."/intelTBB/lib/intel64/vc14/*",            
         }
 
-    end
+    --end
 
     
-    filter "configurations:RELEASE"    
-    links {
-        "tbb","tbbmalloc","tbbmalloc_proxy"
-    }
-
-    filter "configurations:DEBUG"    
-    links {
-        "tbb_debug","tbbmalloc_debug","tbbmalloc_proxy_debug"
-    }
+    

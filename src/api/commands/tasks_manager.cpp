@@ -35,9 +35,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 int solveTaskManager(lua_State * L)
 {
-  json results = json();
-  getCurrentTaskManager(L)->solve(&results);
-  return 0;
+    // Check if any input was given
+    int nargs[2] = { 0, 1 };
+    int n = checkNArguments(L, nargs, 2);
+    
+    // Solve
+    if (n == 1) {
+        checkArgType(L, LUA_TSTRING, 1);
+        std::string filename = std::string(lua_tostring(L, 1));
+        json results = json();
+        getCurrentTaskManager(L)->solve(&results);
+        
+        std::ofstream file;
+        file.open (filename);
+        file << results;
+        file.close();
+    }
+    else {
+        getCurrentTaskManager(L)->solve(nullptr);
+    }
+    
+    return 0;
 }
 
 int printTaskManager(lua_State * L)
@@ -54,7 +72,7 @@ int printTaskManager(lua_State * L)
     getCurrentTaskManager(L)->print(&filename[0]);
   }
   else {
-    getCurrentTaskManager(L)->print(NULL); // to STDOUT
+    getCurrentTaskManager(L)->print(nullptr); // to STDOUT
   }
 
   return 0;
