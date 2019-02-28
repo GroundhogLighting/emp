@@ -37,6 +37,8 @@ and [Emp_core](https://github.com/GroundhogLighting/emp_core) provides the
 calculations capabilities. **If you are only interested in [Emp_core](https://github.com/GroundhogLighting/emp_core),
 feel free to contribute to it, and use it.**
 
+[OFFICIAL DOCUMENTATION](https://groundhoglighting.gitbook.io/emp-doc/)
+
 ## Usage
 
 Emp always receives two inputs: a **model** file and a **script** file. The former is meant
@@ -55,6 +57,8 @@ An example of this could be
 emp model.skp rvu someView
 
 ```
+
+[OFFICIAL DOCUMENTATION](https://groundhoglighting.gitbook.io/emp-doc/)
 
 ### The EMPATH
 
