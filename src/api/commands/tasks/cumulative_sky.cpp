@@ -32,8 +32,8 @@ int workplaneSolarIrradiation(lua_State * L)
     fillOptionsFromLuaTable(&oconvOptions, L, 1);
     
     
-    double min = getDoubleFromTableField(L, 1, MIN_LUX_FIELD);
-    double max = getDoubleFromTableField(L, 1, MAX_LUX_FIELD);
+    double min = getDoubleFromTableField(L, 1, "min_energy");
+    double max = getDoubleFromTableField(L, 1, "max_energy");
     
     
     CheckSolarIrradiationCompliance * t = new CheckSolarIrradiationCompliance(name, model,rtraceOptions,wp,min,max);
@@ -58,8 +58,8 @@ int workplaneDaylightExposure(lua_State * L)
     fillOptionsFromLuaTable(&oconvOptions, L, 1);
     
     
-    double min = getDoubleFromTableField(L, 1, MIN_LUX_FIELD);
-    double max = getDoubleFromTableField(L, 1, MAX_LUX_FIELD);
+    double min = getDoubleFromTableField(L, 1, "min_lux_hours");
+    double max = getDoubleFromTableField(L, 1, "max_lux_hours");
     
     
     CheckDaylightExposureCompliance * t = new CheckDaylightExposureCompliance(name, model,rtraceOptions,wp,min,max);

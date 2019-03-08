@@ -39,20 +39,28 @@ int solveTaskManager(lua_State * L)
     int nargs[2] = { 0, 1 };
     int n = checkNArguments(L, nargs, 2);
     
-    // Solve
+    // Store the results somewhere
+    json results = json();
+    getCurrentTaskManager(L)->solve(&results);
+    
+    // Check if there are any results
+    if(results.empty()){
+        warn("Task manager was manually solved but the result is an empty JSON");
+        return 0;
+    }
+    
+    // Print where it belongs
     if (n == 1) {
         checkArgType(L, LUA_TSTRING, 1);
         std::string filename = std::string(lua_tostring(L, 1));
-        json results = json();
-        getCurrentTaskManager(L)->solve(&results);
-        
         std::ofstream file;
         file.open (filename);
         file << results;
         file.close();
+
     }
     else {
-        getCurrentTaskManager(L)->solve(nullptr);
+        std::cout << results << std::endl;
     }
     
     return 0;
