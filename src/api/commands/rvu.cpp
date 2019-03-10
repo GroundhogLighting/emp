@@ -80,7 +80,7 @@ int review(lua_State * L)
     std::string lat = std::to_string(l->getLatitude());
     std::string lon = std::to_string(l->getLongitude());
     std::string albedo = std::to_string(l->getAlbedo());
-    std::string meridian = std::to_string(15*l->getTimeZone());
+    std::string meridian = std::to_string(-15*l->getTimeZone());
     
     std::string sky = "gensky "+month+" "+day+" "+hour+" -a "+lat+" -o "+lon+" -m " + meridian + " -g "+albedo;
     
