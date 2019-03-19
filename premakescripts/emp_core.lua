@@ -6,7 +6,7 @@ project "emp_core"
     language "C++" 
     runpathdirs { "." }
 
-    targetdir(libs_dir.."/%{cfg.buildcfg}")
+    targetdir(libs_dir)
 
     files {                 
         emp_core_dir.."/src/**.cpp",  
@@ -25,14 +25,26 @@ project "emp_core"
         "rtrad"
     }  
 
+    filter "configurations:RELEASE"    
+    links {
+        "tbb","tbbmalloc","tbbmalloc_proxy"
+    }
+
+    filter "configurations:DEBUG"    
+    links {
+        "tbb_debug","tbbmalloc_debug","tbbmalloc_proxy_debug"
+    }
 
     -- Add the platform specific
-    if is_windows then
+    --if is_windows then
+    filter "system:windows"
         defines { "WIN" }               
         links {
             third_party_dir.."/SketchUp/WIN/binaries/sketchup/x64/*",                        
         }
-    elseif is_macos then
+    --elseif is_macos then
+
+    filter "system:macosx"
         defines { "MACOS" }            
         runpathdirs { "libs" }
         --includedirs
@@ -50,21 +62,14 @@ project "emp_core"
         --    "-F "..emp_core_dir.."/3rdparty/SketchUp/MACOS/headers",            
         --}
         
-    elseif is_linux then
+    --elseif is_linux then
+    filter "system:linux"
         defines { "LINUX", "AVOID_SKP" }    
         links {            
             third_party_dir.."/intelTBB/lib/intel64/vc14/*",            
         }
 
-    end
+    --end
 
-    filter "configurations:RELEASE"    
-    links {
-        "tbb","tbbmalloc","tbbmalloc_proxy"
-    }
-
-    filter "configurations:DEBUG"    
-    links {
-        "tbb_debug","tbbmalloc_debug","tbbmalloc_proxy_debug"
-    }
+    
 

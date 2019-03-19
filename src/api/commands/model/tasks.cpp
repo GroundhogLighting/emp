@@ -27,7 +27,7 @@ int getTasks(lua_State * L)
     checkNArguments(L, 0);
     
     // Get model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     size_t nTasks = model->countTasks();
     
@@ -55,7 +55,7 @@ int getTask(lua_State * L)
     const char * taskName = lua_tostring(L,1);
     
     // Get model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     const json * task = model->getTask(taskName);
     if(task == nullptr){

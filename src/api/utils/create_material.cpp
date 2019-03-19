@@ -57,7 +57,7 @@ int createMaterial(lua_State * L, const char * type)
     std::string name = getNameFromTable(L,1);
     
     // Get the current model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Create the object and fill it
     if(strcmp(type,"dielectric") == 0){

@@ -2,7 +2,7 @@
 project "Lua"
 kind "StaticLib"
 language "C"
-targetdir (libs_dir.."/%{cfg.platform}".."/%{cfg.buildcfg}")    
+targetdir (libs_dir)    
 files {
     lua_dir.."/lapi.c",
     lua_dir.."/lcode.c",
@@ -26,7 +26,7 @@ files {
     lua_dir.."/lzio.c",
     lua_dir.."/lauxlib.c",
     lua_dir.."/lbaselib.c",
-    lua_dir.."/lbitlib.c",
+    --lua_dir.."/lbitlib.c", -- deprecated
     lua_dir.."/lcorolib.c",
     lua_dir.."/ldblib.c",
     lua_dir.."/liolib.c",

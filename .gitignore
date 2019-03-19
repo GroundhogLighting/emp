@@ -44,3 +44,5 @@ premakescripts/obj
 premakescripts/*.make
 
 **.DS_Store**
+
+dist/DEBUG

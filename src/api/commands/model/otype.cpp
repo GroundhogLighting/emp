@@ -37,7 +37,7 @@ int otypeExists(lua_State * L)
     // Retrieve the first argument
     std::string objectName = lua_tostring(L, 1);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Check if workplane exists
     bool exists = (model->getOtypeByName(&objectName) != nullptr);

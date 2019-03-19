@@ -31,13 +31,6 @@ extern "C" {
 #include <iostream>
 #include "../../utils/common.h"
 
-//! Raises an error in Lua
-/*
-@param[in] L The Lua state
-@return the number of return values within the script
-*/
-int raise(lua_State * L); 
-
 
 //! Warns something to the user
 /*

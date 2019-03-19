@@ -36,13 +36,13 @@ extern "C" {
 /*!
 @author German Molina
 @param[in] L the lua_State
-@param[in] ghmodel The GroundhogModel to set as global variable
+@param[in] ghmodel The EmpModel to set as global variable
 @param[in] taskDictionary The Task Dictionary 
 @param[in] taskManager The TaskManager to set as global variable
 @param[in] argc Number of arguments
 @param[in] argv The arguments given to the command line
 */
-void initAPI(lua_State * L, GroundhogModel * ghmodel, TaskManager * taskManager, int argc, char* argv[]);
+void initAPI(lua_State * L, EmpModel * ghmodel, TaskManager * taskManager, int argc, char* argv[]);
 
 
 #endif

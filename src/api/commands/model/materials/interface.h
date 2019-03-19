@@ -43,7 +43,7 @@ extern "C" {
 
 void fillData(Interface * o, lua_State * L, int tableIndex);
 
-//! Adds a new interface object to the GroundhogModel
+//! Adds a new interface object to the EmpModel
 /*!
  @author German Molina
  @param[in] L The lua_State of the api

@@ -3,14 +3,17 @@
 
 -- Run pre-build commands
 premakescripts_dir = "./premakescripts"
-dofile(premakescripts_dir.."/config.lua")
+--dofile(premakescripts_dir.."/config.lua")
 dofile(premakescripts_dir.."/prebuild.lua")
 
 
 workspace "Emp"
     architecture "x86_64"
     configurations { "DEBUG", "RELEASE" } 
-    defines { "EMP" }   
+    defines { "EMP" }              
+    staticruntime "On"
+    cppdialect "C++17"
+    systemversion "latest"
 
 filter "configurations:DEBUG"
     symbols "On" 
@@ -27,17 +30,15 @@ filter "configurations:RELEASE"
         "TBB_DO_THREADING_TOOLS=0" 
     }
 
--- Fix to set Windows 10 instead of 8.1
-if is_windows then
-    systemversion(os.winSdkVersion() .. ".0")
-end
 
 dofile(premakescripts_dir.."/lua.lua")
 dofile(premakescripts_dir.."/emp_core.lua")
 dofile(premakescripts_dir.."/emp.lua")
 dofile(premakescripts_dir.."/rtrad.lua")
 dofile(premakescripts_dir.."/tbb.lua")
+dofile(premakescripts_dir.."/emp_core_tests.lua")
+dofile(premakescripts_dir.."/google_test.lua")
+dofile(premakescripts_dir.."/doc.lua")
+dofile(premakescripts_dir.."/tests.lua")
 
---package.path = package.path .. ";"..premakescripts_dir.."/?.lua"
---require("tbb")
 

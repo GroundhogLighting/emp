@@ -30,12 +30,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "./tasks/da.h"
 #include "./tasks/udi.h"
 #include "./tasks/ase.h"
+#include "./tasks/cumulative_sky.h"
+
 
 int solveTaskManager(lua_State * L)
 {
-  json results = json();
-  getCurrentTaskManager(L)->solve(&results);
-  return 0;
+    // Check if any input was given
+    int nargs[2] = { 0, 1 };
+    int n = checkNArguments(L, nargs, 2);
+    
+    // Store the results somewhere
+    json results = json();
+    getCurrentTaskManager(L)->solve(&results);
+    
+    // Check if there are any results
+    if(results.empty()){
+        warn("Task manager was manually solved but the result is an empty JSON");
+        return 0;
+    }
+    
+    // Print where it belongs
+    if (n == 1) {
+        checkArgType(L, LUA_TSTRING, 1);
+        std::string filename = std::string(lua_tostring(L, 1));
+        std::ofstream file;
+        file.open (filename);
+        file << results;
+        file.close();
+
+    }
+    else {
+        std::cout << results << std::endl;
+    }
+    
+    return 0;
 }
 
 int printTaskManager(lua_State * L)
@@ -52,7 +80,7 @@ int printTaskManager(lua_State * L)
     getCurrentTaskManager(L)->print(&filename[0]);
   }
   else {
-    getCurrentTaskManager(L)->print(NULL); // to STDOUT
+    getCurrentTaskManager(L)->print(nullptr); // to STDOUT
   }
 
   return 0;
@@ -77,34 +105,44 @@ int pushJSONMetric(lua_State * L)
     // Get class field
     std::string className = getStringFromTableField(L, 1, "class");
     
+    // Compare in lowercase... more flexibility
+    downCase(&className);
+    
     // Do what should be done
-    if(className == "UDI" || className == "Useful Daylight Illuminance"){
+    if(className == "UDI" || className == "useful daylight illuminance"){
         return workplaneUDI(L);
         
-    }else if(className == "DA" || className == "Daylight Autonomy"){
+    }else if(className == "DA" || className == "daylight autonomy"){
         return workplaneDA(L);
         
-    }else if(className == "Clear sky illuminance"){
+    }else if(className == "clear sky illuminance"){
         return clearSkyWorkplaneIlluminance(L);
         
-    }else if(className == "Intermediate sky illuminance"){
+    }else if(className == "intermediate sky illuminance"){
         return intermediateSkyWorkplaneIlluminance(L);
         
-    }else if(className == "Overcast sky illuminance"){
+    }else if(className == "overcast sky illuminance"){
         return overcastSkyWorkplaneIlluminance(L);
         
-    }else if(className == "Weather sky illuminance"){
+    }else if(className == "weather sky illuminance"){
         return perezSkyWorkplaneIlluminance(L);
         
-    }else if(className == "DF" || className == "Daylight Factor"){
+    }else if(className == "df" || className == "daylight factor"){
         return workplaneDF(L);
         
-    }else if(className == "ASE" || className == "Annual Sunlight Exposure"){
+    }else if(className == "ase" || className == "annual sunlight exposure"){
         return workplaneASE(L);
+        
+    }else if(className == "annual solar irradiation"){
+        return workplaneSolarIrradiation(L);
+        
+    }else if(className == "annual daylight exposure"){
+        return workplaneDaylightExposure(L);
         
     }else {
         std::string err = "Unknown metric class '"+className+"'";
         usageError(L, err);
     }
+    
     return 0;
 }

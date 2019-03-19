@@ -31,5 +31,9 @@ dofile(premakescripts_dir.."/config.lua")
 
 
 -- Create the bin/Debug and bin/Release directories
-os.mkdir("../dist/DEBUG/bin")
-os.mkdir("../dist/RELEASE/bin")
+os.mkdir("../dist/DEBUG/"..p_dir)
+os.mkdir("../dist/RELEASE/"..p_dir)
+os.mkdir("../dist/DEBUG/"..rp_dir)
+os.mkdir("../dist/RELEASE/"..rp_dir)
+os.mkdir("../dist/DEBUG/"..ep_dir)
+os.mkdir("../dist/RELEASE/"..ep_dir)

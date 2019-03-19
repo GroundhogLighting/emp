@@ -25,7 +25,7 @@ Workplane * getWorkplane(lua_State * L, std::string * workplaneName)
 #ifdef _DEBUG
     INIT_STACK_CHECK_STACK_SIZE
 #endif
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     Workplane * wp = model->getWorkplaneByName(workplaneName);
     
     if (wp == nullptr) {

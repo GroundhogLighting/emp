@@ -31,7 +31,7 @@
     std::string name = getStringFromTableField(L, 1, "name"); \
     std::string wpName = getStringFromTableField(L, 1, "workplane"); \
     Workplane * wp = getWorkplane(L,&wpName); \
-    GroundhogModel * model = getCurrentModel(L); \
+    EmpModel * model = getCurrentModel(L); \
     RTraceOptions * rtraceOptions = model->getRTraceOptions(); \
     TaskManager * tm = getCurrentTaskManager(L);
 

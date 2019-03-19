@@ -28,7 +28,7 @@ int getWorkplanesList(lua_State * L)
     // Check nuber of arguments
     checkNArguments(L, 0);
     
-	GroundhogModel * model = getCurrentModel(L);
+	EmpModel * model = getCurrentModel(L);
 	size_t nwps = model->getNumWorkplanes();
 
 	// Create the table
@@ -50,7 +50,7 @@ int getWorkplanesData(lua_State * L)
     // Check nuber of arguments
     checkNArguments(L, 0);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     size_t nwps = model->getNumWorkplanes();
     
     // Create the table
@@ -126,7 +126,7 @@ int workplaneExists(lua_State * L)
     // Retrieve the first argument
 	std::string wpName = lua_tostring(L, 1);
 
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Check if workplane exists
 	bool exists = (model->getWorkplaneByName(&wpName) != nullptr);
@@ -150,7 +150,7 @@ int createWorkplane(lua_State * L)
     std::string name = requireNameFromTable(L,1);
     
     // Get model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
 
     // Create a new polygon
     Polygon3D * polygon = new Polygon3D();

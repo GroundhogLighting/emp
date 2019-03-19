@@ -40,7 +40,7 @@ int writeRadSceneFile(lua_State * L)
     fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Get the Task Manager
     TaskManager * tm = getCurrentTaskManager(L);
@@ -78,7 +78,7 @@ int writeRadRifFile(lua_State * L)
     fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Get the Task Manager
     TaskManager * tm = getCurrentTaskManager(L);
@@ -107,7 +107,7 @@ int writeRadModelInfo(lua_State * L)
     fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Get the Task Manager
     TaskManager * tm = getCurrentTaskManager(L);
@@ -136,7 +136,7 @@ int writeRadComponentDefinitions(lua_State * L)
     fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Get the Task Manager
     TaskManager * tm = getCurrentTaskManager(L);
@@ -165,7 +165,7 @@ int writeRadViews(lua_State * L)
     fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Get the Task Manager
     TaskManager * tm = getCurrentTaskManager(L);
@@ -195,7 +195,7 @@ int writeRadCurrentSky(lua_State * L)
     fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Get the Task Manager
     TaskManager * tm = getCurrentTaskManager(L);
@@ -225,7 +225,7 @@ int writeRadCurrentWeather(lua_State * L)
     fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Get the Task Manager
     TaskManager * tm = getCurrentTaskManager(L);
@@ -254,7 +254,7 @@ int writeRadMaterials(lua_State * L)
     fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Get the Task Manager
     TaskManager * tm = getCurrentTaskManager(L);
@@ -283,7 +283,7 @@ int writeRadLayers(lua_State * L)
     fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Get the Task Manager
     TaskManager * tm = getCurrentTaskManager(L);
@@ -312,7 +312,7 @@ int writeRadPhotosensors(lua_State * L)
     fillOptionsFromLuaTable(&options, L, 1);
     
     // Get current model
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Get the Task Manager
     TaskManager * tm = getCurrentTaskManager(L);

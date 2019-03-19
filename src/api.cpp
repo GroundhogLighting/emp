@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
-void initAPI(lua_State * L, GroundhogModel * ghmodel, TaskManager * taskManager, int argc, char* argv[]) {
+void initAPI(lua_State * L, EmpModel * ghmodel, TaskManager * taskManager, int argc, char* argv[]) {
 
 	// REGISTER THE GROUNDHOG MODEL
 	lua_pushlightuserdata(L, ghmodel);

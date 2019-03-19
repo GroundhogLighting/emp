@@ -23,14 +23,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../../config_constants.h"
 
 
-GroundhogModel * getCurrentModel(lua_State * L)
+EmpModel * getCurrentModel(lua_State * L)
 {
 #ifdef _DEBUG
     INIT_STACK_CHECK_STACK_SIZE
 #endif
 	
     lua_getglobal(L, LUA_MODEL_VARIABLE);
-	GroundhogModel * model = (GroundhogModel *)lua_touserdata(L, lua_gettop(L));
+	EmpModel * model = (EmpModel *)lua_touserdata(L, lua_gettop(L));
 	lua_pop(L, 1);
     
 #ifdef _DEBUG
@@ -634,7 +634,6 @@ void tableToJsonArray(lua_State * L, int tablePosition, json * j)
                 break;
             case LUA_TTABLE:
             {
-                
                 if(fieldExists(L,-1,1)){
                     // is array
                     j->push_back(json::array());
@@ -644,7 +643,7 @@ void tableToJsonArray(lua_State * L, int tablePosition, json * j)
                     // is object
                     j->push_back(json::object());
                     size_t size = j->size()-1;
-                    tableToJson(L,-1,&(j->at(size)));
+                    tableToJson(L,-2,&(j->at(size)));
                 }
                 
                 break;
@@ -676,8 +675,6 @@ void tableToJson(lua_State * L, int tablePosition, json * j)
     if(!j->is_object())
         executionError(L,"tableToJson function requires an json::object");
     
-    
-    
     // Iterate
     lua_pushnil(L);  /* first key */
     while (lua_next(L, tablePosition) != 0) {
@@ -693,6 +690,7 @@ void tableToJson(lua_State * L, int tablePosition, json * j)
             std::string err = "Key of type" + type + " in Table inputed to tableToJson function";
             executionError(L, err);
         }
+        
         
         // Check value type
         switch(lua_type(L, -1)){
@@ -719,6 +717,9 @@ void tableToJson(lua_State * L, int tablePosition, json * j)
                 
                 break;
             }
+            case LUA_TFUNCTION:
+                (*j)[key.c_str()]="function";
+                break;
             default:
                 std::string type = std::string(lua_typename(L, lua_type(L, -1)));
                 std::string err = "Value of type" + type + " in Table inputed to tableToJson function";

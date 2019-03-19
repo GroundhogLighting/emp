@@ -31,7 +31,7 @@ int getLayersList(lua_State * L)
     // Check the number of arguments
     checkNArguments(L, 0);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     size_t nwps = model->getNumLayers();
     
     // Create the table
@@ -100,7 +100,7 @@ int layerExists(lua_State * L)
     // Retrieve the first argument
     std::string layerName = lua_tostring(L, 1);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Check if workplane exists
     bool exists = (model->getLayerByName(&layerName) != nullptr);
@@ -125,7 +125,7 @@ int createLayer(lua_State * L)
     
     lua_pushstring(L, layerName.c_str());
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     model->addLayer(&layerName);
     return 1;

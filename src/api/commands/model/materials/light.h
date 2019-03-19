@@ -43,7 +43,7 @@ extern "C" {
 
 void fillData(Light * o, lua_State * L, int tableIndex);
 
-//! Adds a new light object to the GroundhogModel
+//! Adds a new light object to the EmpModel
 /*!
  @author German Molina
  @param[in] L The lua_State of the api

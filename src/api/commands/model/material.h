@@ -32,7 +32,7 @@ extern "C" {
 #include "emp_core.h"
 
 
-//! Retrieves a list of the Material objects in the GroundhogModel
+//! Retrieves a list of the Material objects in the EmpModel
 /*!
  @author German Molina
  @param[in] L The lua_State of the api
@@ -41,7 +41,7 @@ extern "C" {
 int getMaterialsList(lua_State * L);
 
 
-//! Checks if a Material exists in a GroundhogModel
+//! Checks if a Material exists in a EmpModel
 /*!
  @author German Molina
  @param[in] L The lua state

@@ -31,7 +31,7 @@ int getComponentDefinitionsList(lua_State * L)
     // Check the number of arguments
     checkNArguments(L, 0);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     size_t nwps = model->getNumComponentDefinitions();
     
     // Create the table
@@ -100,7 +100,7 @@ int componentDefinitionExists(lua_State * L)
     // Retrieve the first argument
     std::string cdName = lua_tostring(L, 1);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     // Check if workplane exists
     bool exists = (model->getComponentDefinitionByName(&cdName) != nullptr);
@@ -125,7 +125,7 @@ int createComponentDefinition(lua_State * L)
     std::string name = lua_tostring(L, 1);
             
     // Create a ComponentDefinition and add it
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     model->addComponentDefinition(&name);
     
     // Return the name

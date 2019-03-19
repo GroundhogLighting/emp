@@ -28,7 +28,7 @@ int getLocation(lua_State * L)
     // Check the number of arguments
     checkNArguments(L, 0);
     
-    GroundhogModel * model = getCurrentModel(L);
+    EmpModel * model = getCurrentModel(L);
     
     Location * l = model->getLocation();
     

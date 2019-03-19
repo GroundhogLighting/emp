@@ -38,17 +38,6 @@ int warn(lua_State * L)
 	return 0;
 }
 
-int raise(lua_State * L)
-{
-    // Check single argument
-    checkNArguments(L, 1);
-    
-    // Check that it is a string
-    checkArgType(L, LUA_TSTRING, 1);
-    
-    executionError(L,std::string(lua_tostring(L, 1)));
-	return 0;
-}
 
 
 int printValue(lua_State * L)
@@ -57,27 +46,29 @@ int printValue(lua_State * L)
     checkNArguments(L, 1);
     
     // Print the value
+    std::string r = "";
+    
     int type = lua_type(L, 1);
     switch(type){
             
         case LUA_TNIL:
-            std::cout << "nil" << std::endl;
+            r = r + "nil" + "\n";
             break;
             
         case LUA_TNONE:
-            std::cout << "nil" << std::endl;
+            r = r + "nil" + "\n";
             break;
             
         case LUA_TSTRING:
-            std::cout << "\"" << lua_tostring(L, 1) << "\"" << std::endl;
+            r = r + "\"" + std::string(lua_tostring(L, 1)) + "\"\n";
             break;
             
         case LUA_TNUMBER:
-            std::cout << lua_tonumber(L, 1) << std::endl;
+            r = r + std::to_string(lua_tonumber(L, 1)) + "\n";
             break;
             
         case LUA_TBOOLEAN:
-            std::cout << (lua_toboolean(L, 1) == 1 ? "true" : "false") << std::endl;
+            r = r + (lua_toboolean(L, 1) == 1 ? "true" : "false") + "\n";
             break;
         
         case LUA_TTABLE:
@@ -87,12 +78,12 @@ int printValue(lua_State * L)
                     // array
                     json j = json::array();
                     tableToJsonArray(L,1,&j);
-                    std::cout << j.dump(2) << std::endl;
+                    r = r + j.dump(2) + "\n";
                 }else{
                     // Object
                     json j = json::object();
                     tableToJson(L,1,&j);
-                    std::cout << j.dump(2) << std::endl;
+                    r = r + j.dump(2) + "\n";
                 }
                 break;                
             }
@@ -102,5 +93,6 @@ int printValue(lua_State * L)
             warn(L);
     }
     
-    return 0;
+    lua_pushstring(L, &r[0]);
+    return 1;
 }
